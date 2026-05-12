@@ -28,7 +28,7 @@ const BOMBONAS_OPCOES = [
 
 const EMAILS_EQUIPE = [
   'rafael.sa@sabin.com.br', 'lucas.ribeiro@sabin.com.br', 'miraglayce.nunes@sabin.com.br',
-  'mayza.lima@sabin.com.br','julia.andrade@sabin.com.br','luana.lucchini@sabin.com.br'
+  'mayza.lima@sabin.com.br','julia.andrade@sabin.com.br','luana.lucchini@sabin.com.br',
   'claudia.avelar@sabin.com.br', 'gabriel.soares@sabin.com.br'
 ];
 
