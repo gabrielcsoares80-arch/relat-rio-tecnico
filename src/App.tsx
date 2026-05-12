@@ -1,17 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Save, FileText, Building2, Users, MapPin, ChevronDown, Check, Activity, Clock, Trash2, FileSignature, Info, Route, UploadCloud, Upload, AlertCircle, X, Hammer, PaintBucket, DoorOpen, Square, Plus, LayoutGrid, Zap, Droplets, BookOpen, CheckCircle } from 'lucide-react';
 
-// ============================================================================
-// 👇 COLE SEUS CÓDIGOS BASE64 AQUI DENTRO DAS ASPAS ("") 👇
-// ============================================================================
-
-const LOGO_SABIN_HEADER = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg/512px-Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg.png";
-const IMAGEM_EMBALAGENS_FIXA = "https://placehold.co/600x300/e2e8f0/cc0000?text=Imagem+das+Embalagens";
-
-// ============================================================================
-// 👆 FIM DA SEÇÃO DE BASE64 👆
-// ============================================================================
-
 const ATIVIDADES_OPCOES = [
   'Selecione a atividade...',
   'Posto de atendimento e coleta para análises clínicas.',
@@ -39,7 +28,7 @@ const BOMBONAS_OPCOES = [
 
 const EMAILS_EQUIPE = [
   'rafael.sa@sabin.com.br', 'lucas.ribeiro@sabin.com.br', 'miraglayce.nunes@sabin.com.br',
-  'naiara.sousa@sabin.com.br', 'ana.landrade@sabin.com.br', 'mayza.lima@sabin.com.br',
+  'mayza.lima@sabin.com.br','julia.andrade@sabin.com.br','luana.lucchini@sabin.com.br'
   'claudia.avelar@sabin.com.br', 'gabriel.soares@sabin.com.br'
 ];
 
