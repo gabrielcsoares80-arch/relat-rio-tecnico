@@ -1,6 +1,20 @@
 import React, { useState, useRef } from 'react';
 import { Save, FileText, Building2, Users, MapPin, ChevronDown, Check, Activity, Clock, Trash2, FileSignature, Info, Route, UploadCloud, Upload, AlertCircle, X, Hammer, PaintBucket, DoorOpen, Square, Plus, LayoutGrid, Zap, Droplets, BookOpen, CheckCircle } from 'lucide-react';
 
+// ============================================================================
+// 👇 COLE SEUS CÓDIGOS BASE64 AQUI DENTRO DAS ASPAS ("") 👇
+// ============================================================================
+
+// 1. Cole aqui o Base64 da Logo do Sabin (ex: "data:image/png;base64,...")
+const LOGO_SABIN_HEADER = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg/512px-Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg.png";
+
+// 2. Cole aqui o Base64 da Imagem Normativa de Embalagens
+const IMAGEM_EMBALAGENS_FIXA = "https://placehold.co/600x300/e2e8f0/cc0000?text=Imagem+das+Embalagens";
+
+// ============================================================================
+// 👆 FIM DA SEÇÃO DE BASE64 👆
+// ============================================================================
+
 // --- CONFIGURAÇÕES E OPÇÕES CONSTANTES ---
 const ATIVIDADES_OPCOES = [
   'Selecione a atividade...',
@@ -40,10 +54,6 @@ const ENGENHEIROS = [
   { nome: 'Gabriel Costa Soares', crea: 'A definir' },
   { nome: 'Outro (Digitar manualmente)', crea: '' }
 ];
-
-// ================= IMAGENS FIXAS (COLE SEU BASE64 AQUI) =================
-const IMAGEM_EMBALAGENS_FIXA = "https://placehold.co/600x300/e2e8f0/cc0000?text=Imagem+das+Embalagens";
-const LOGO_SABIN_HEADER = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg/512px-Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg.png";
 
 const OPCOES_MATERIAIS = {
   fechamentosInt: ['Gesso Acartonado', 'Divisória Naval', 'Alvenaria', 'Existente'],
@@ -314,8 +324,6 @@ export default function App() {
   const [isEngenheiroManual, setIsEngenheiroManual] = useState(false);
   const [isCnaeManual, setIsCnaeManual] = useState(false);
   const [showRevitInfo, setShowRevitInfo] = useState(false);
-  
-  const fileInputRef = useRef(null);
 
   // ================= ESTADO FASE 1: IDENTIFICAÇÃO (LIMPO) =================
   const [identificacao, setIdentificacao] = useState({
@@ -505,12 +513,10 @@ export default function App() {
       const lines = text.split('\n').filter(line => line.trim() !== '');
       if (lines.length < 2) return alert("O arquivo parece estar vazio ou inválido.");
 
-      // Detectar delimitador (Tabulação é o padrão do Revit, mas aceitamos ponto e vírgula ou vírgula)
       let delimiter = '\t';
       if (lines[0].includes(';')) delimiter = ';';
       else if (lines[0].includes(',')) delimiter = ',';
 
-      // Encontrar a linha de cabeçalho (A primeira linha que contiver 'nome')
       let headerRowIndex = 0;
       for (let i = 0; i < Math.min(lines.length, 5); i++) {
         if (normalizeString(lines[i]).includes('nome')) {
@@ -521,7 +527,6 @@ export default function App() {
 
       const headers = lines[headerRowIndex].split(delimiter).map(h => normalizeString(h));
       
-      // Mapear índices das colunas
       const colMap = {
         nome: headers.findIndex(h => h.includes('nome')),
         area: headers.findIndex(h => h.includes('area')),
@@ -537,17 +542,14 @@ export default function App() {
 
       const novosAmbientes = [];
       
-      // Iterar sobre as linhas de dados
       for (let i = headerRowIndex + 1; i < lines.length; i++) {
-        const row = lines[i].split(delimiter).map(cell => cell.replace(/^["']|["']$/g, '').trim()); // Remove aspas extras
+        const row = lines[i].split(delimiter).map(cell => cell.replace(/^["']|["']$/g, '').trim()); 
         if (!row[colMap.nome]) continue;
 
         const roomNameRaw = row[colMap.nome];
         let areaRaw = colMap.area !== -1 ? row[colMap.area] : '';
-        // Limpar texto de "m²" ou letras da área
         areaRaw = areaRaw.replace(/[^\d.,]/g, '').trim(); 
 
-        // Buscar correspondência de Template no Banco de Dados Oculto
         let matchedTemplate = AMBIENTES_DB.find(t => normalizeString(t.nomeTemplate) === normalizeString(roomNameRaw)) ||
                               AMBIENTES_DB.find(t => normalizeString(roomNameRaw).includes(normalizeString(t.nomeTemplate)));
         
@@ -583,7 +585,6 @@ export default function App() {
         setExpandedRoomId(novosAmbientes[0].id);
       }
       
-      // Reseta o input para permitir importar o mesmo arquivo novamente se necessário
       e.target.value = null; 
     };
     reader.readAsText(file);
@@ -666,6 +667,53 @@ export default function App() {
   const traduzirMaterial = (itemNome, categoria) => {
     if (itemNome === 'Existente') return materiais.textosExistentes[categoria] || 'Existente no local (Não especificado).';
     return DICIONARIO_TEXTOS[itemNome] || itemNome;
+  };
+
+  // ================= SALVAR E IMPORTAR DADOS (BACKUP) =================
+  const handleSaveData = () => {
+    const dataToSave = {
+      identificacao,
+      atendimento,
+      fluxos,
+      materiais,
+      ambientesProjeto,
+      instalacoes,
+      isEngenheiroManual,
+      isCnaeManual
+    };
+    const jsonString = JSON.stringify(dataToSave, null, 2);
+    const blob = new Blob([jsonString], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `backup_memorial_${identificacao.nomeFantasia ? identificacao.nomeFantasia.replace(/\s+/g, '_').toLowerCase() : 'sabin'}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleLoadData = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const loadedData = JSON.parse(e.target.result);
+        if (loadedData.identificacao) setIdentificacao(loadedData.identificacao);
+        if (loadedData.atendimento) setAtendimento(loadedData.atendimento);
+        if (loadedData.fluxos) setFluxos(loadedData.fluxos);
+        if (loadedData.materiais) setMateriais(loadedData.materiais);
+        if (loadedData.ambientesProjeto) setAmbientesProjeto(loadedData.ambientesProjeto);
+        if (loadedData.instalacoes) setInstalacoes(loadedData.instalacoes);
+        if (loadedData.isEngenheiroManual !== undefined) setIsEngenheiroManual(loadedData.isEngenheiroManual);
+        if (loadedData.isCnaeManual !== undefined) setIsCnaeManual(loadedData.isCnaeManual);
+        alert("Dados importados com sucesso! Você pode continuar seu projeto.");
+      } catch (error) {
+        alert("Erro ao ler o arquivo. Certifique-se de que é um arquivo de backup válido (.json).");
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = null; // reseta o input para permitir importar o mesmo arquivo depois
   };
 
   // --- Gerador do Documento Word ---
@@ -1080,14 +1128,23 @@ export default function App() {
         
         {/* HEADER GERAL */}
         <div className="flex flex-col mb-6">
-          <div className="flex justify-between items-center bg-white p-6 rounded-t-xl shadow-sm border-b border-gray-200">
+          <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center bg-white p-6 rounded-t-xl shadow-sm border-b border-gray-200">
             <div>
               <h1 className="text-2xl font-bold text-red-700">Gerador de Memorial Descritivo</h1>
               <p className="text-sm text-gray-500 mt-1">Sabin Medicina Diagnóstica - Automação de Projetos</p>
             </div>
-            <button onClick={gerarDocumentoWord} className="flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors shadow-sm">
-              <FileSignature size={18} /> Gerar Documento (Word)
-            </button>
+            <div className="flex gap-2 items-center flex-wrap">
+              <label className="cursor-pointer flex justify-center items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                <UploadCloud size={16} /> Importar dados
+                <input type="file" className="hidden" accept=".json" onChange={handleLoadData} />
+              </label>
+              <button onClick={handleSaveData} className="flex justify-center items-center gap-2 bg-white hover:bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                <Save size={16} /> Salvar
+              </button>
+              <button onClick={gerarDocumentoWord} className="flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                <FileSignature size={16} /> Gerar relatório
+              </button>
+            </div>
           </div>
           
           <div className="flex bg-white shadow-sm rounded-b-xl px-2 md:px-4 overflow-x-auto hide-scrollbar">
@@ -1410,7 +1467,6 @@ export default function App() {
         {/* ================= FASE 5: AMBIENTES ================= */}
         <div className={activeTab === 'ambientesEspecificos' ? "space-y-6 animate-in fade-in" : "hidden"}>
           
-          {/* BOTÃO DO REVIT MOVIDO PARA AQUI */}
           <div className="bg-white p-6 border border-gray-200 rounded-xl shadow-sm mb-6 flex justify-between items-center">
             <div>
               <h3 className="font-semibold text-gray-800 flex items-center gap-2"><Upload size={18} className="text-red-600"/> Integração BIM (Revit)</h3>
