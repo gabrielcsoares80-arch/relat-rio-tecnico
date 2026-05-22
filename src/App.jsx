@@ -2,15 +2,11 @@ import React, { useState, useRef } from 'react';
 import { Save, FileText, Building2, Users, MapPin, ChevronDown, Check, Activity, Clock, Trash2, FileSignature, Info, Route, UploadCloud, AlertCircle, X, Hammer, PaintBucket, DoorOpen, Square, Plus, LayoutGrid, Droplets, Download, Image as ImageIcon } from 'lucide-react';
 
 // ============================================================================
-// 👇 COLE SEUS CÓDIGOS BASE64 AQUI DENTRO DAS ASPAS ("") 👇
+// CONSTANTES BASE
 // ============================================================================
 
 const LOGO_SABIN_HEADER = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg/512px-Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg.png";
 const IMAGEM_EMBALAGENS_FIXA = "https://placehold.co/600x300/e2e8f0/cc0000?text=Imagem+das+Embalagens";
-
-// ============================================================================
-// 👆 FIM DA SEÇÃO DE BASE64 👆
-// ============================================================================
 
 const ATIVIDADES_OPCOES = [
   'Selecione a atividade...',
@@ -57,7 +53,7 @@ const ENGENHEIROS = [
 
 const OPCOES_MATERIAIS = {
   fechamentosInt: ['Gesso Acartonado', 'Divisória Naval', 'Alvenaria', 'Existente'],
-  acabamentosInt: ['Pintura Acrílica (Branco Neve)', 'Revestimento Cerâmico Branco', '1 parede com revestimento', 'Existente'],
+  acabamentosInt: ['Pintura Acrílica (Branco Neve)', 'Pintura Acrílica (Branco Neve / Azul Del Rey)', 'Revestimento Cerâmico Branco', '1 parede com revestimento', 'Existente'],
   fechamentosExt: ['Alvenaria', 'Fachada de Vidro', 'Existente'],
   acabamentosExt: ['Pintura (Sol & Chuva Premium)', 'Existente'],
   pisos: ['Porcelanato Eliane (80x80cm)', 'Porcelanato Elizabeth (60x60cm)', 'Piso Intertravado', 'Existente'],
@@ -65,7 +61,7 @@ const OPCOES_MATERIAIS = {
   forros: ['Gesso Acartonado', 'Fibra Mineral', 'Laje de Concreto Existente'],
   esquadrias: [
     'Porta Pivotante em vidro temperado', 'Porta de correr em vidro', 'Porta de correr "mão amiga"',
-    'Kit Porta Pronta Pormade', 'Kit Porta pronta pormade correr', 'Porta de giro em madeira (Dalcomad)', 'Porta tipo veneziana metálica',
+    'Kit Porta Pronta Pormade', 'Kit porta de correr Pormade', 'Porta de giro em madeira (Dalcomad)', 'Porta tipo veneziana metálica',
     'Porta sanfonada', 'Porta de enrolar em aço galvanizado', 'Existente'
   ]
 };
@@ -91,11 +87,11 @@ const DICIONARIO_TEXTOS = {
   'Porta de correr em vidro': 'Porta de correr em vidro temperado, espessura de 8mm, película de segurança contra estilhaços com acabamento jateado, trilho superior em alumínio.',
   'Porta de correr "mão amiga"': 'Porta de correr tipo "mão amiga" em vidro temperado transparente. Vidro com 8mm e película de segurança; trilho superior em alumínio.',
   'Kit Porta Pronta Pormade': 'Kit Porta Pronta Pormade branca lisa semioca, corpo do alizar branco de PVC Wood, fechaduras Pado Concept cromada.',
+  'Kit porta de correr Pormade': 'Kit porta de correr Pormade branca lisa semi oca, com marco e alizar em PVC Wood branco, ferragens cromadas e sistema de correr compatível.',
   'Porta de giro em madeira (Dalcomad)': 'Porta de giro em madeira - Kit Porta Branca lisa Dalcomad, com revestimento melanímico, semi-sólida.',
   'Porta tipo veneziana metálica': 'Porta tipo veneziana metálica em aço carbono #nº 16, com pintura branco neve metalatex; fechadura tipo tetra.',
-  'Kit porta pronta pormade correr': 'Kit porta de correr Pormade branca lisa semi oca, com marco e alizar em PVC Wood branco, ferragens cromadas e sistema de correr compatível com a linha Pormade.',
   'Porta sanfonada': 'Porta tipo sanfonada lisa em plástico de ambos os lados na cor Branca. Marca Plasbil ou similar.',
-  'Porta de enrolar em aço galvanizado': 'Porta de enrolar em aço galvanizado de perfil liso, com pintura eletrostática prata cinza RAL 9006.',
+  'Porta de enrolar em aço galvanizado': 'Porta de enrolar em aço galvanizado de perfil liso, com pintura eletrostática prata cinza RAL 9006.'
 };
 
 const OPCOES_RDC = [
@@ -105,7 +101,7 @@ const OPCOES_RDC = [
 ];
 
 const AMBIENTES_DB = [
-  { tipoId: 'recepcao', nomeTemplate: 'Recepção', definicao: 'Área climatizada, ampla, destinada a recepcionar, atender e orientar pacientes, acompanhantes, recebimento de materiais de exames, além de identificar e registrar dados de acesso.', atividades: 'Acolhimento;\nOrientação do Fluxo de circulação;\nAdmissão de Pacientes;\nIdentificação no acesso;\nIdentificação do material biológico;\nInformações gerais;\nResultado de exames;\nEspaço Infantil.', equipamentos: 'XX Televisões de 43 polegadas para a senha;\nXX Computadores;\nXX Impressora a laser multiprofissional;\n01 Aparelho telefônico;\nXX Máquinas de cartão;\nXX Etiquetadora zebra;\n01 Dispensador de senhas;\nXX Plataforma elevatória para cadeirantes.', mobiliarios: 'XX Cadeiras ergonômicas com braços;\nXX Cadeiras para atendimento (Cadeira pipe - marca alberflex)';'\nXX Longarina pipe três lugares sem mesa - marca Alberflex';'\nXX Longarina pipe dois lugares sem mesa - marca alberflex';'\nXX Cadeiras em madeira (infantil).', movelarias: 'XX Guichês de atendimento em MDF branco com painel de vidro temperado;\nXX Guichê P.C.D.;\nXX Painel para TV em MDF;\nXX Bancada de apoio;\nXX Gaveteiro;\nXX Painéis com brinquedos.', acessorios: 'XX Dispensadores de álcool gel;\nXX Lixeiras infectantes com pedal;\nXX Lixeiras para papel e plástico.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba de encaixe;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'recepcao', nomeTemplate: 'Recepção', definicao: 'Área climatizada, ampla, destinada a recepcionar, atender e orientar pacientes, acompanhantes, recebimento de materiais de exames, além de identificar e registrar dados de acesso.', atividades: 'Acolhimento;\nOrientação do Fluxo de circulação;\nAdmissão de Pacientes;\nIdentificação no acesso;\nIdentificação do material biológico;\nInformações gerais;\nResultado de exames;\nEspaço Infantil.', equipamentos: 'XX Televisões de 43 polegadas para a senha;\nXX Computadores;\nXX Impressora a laser multiprofissional;\n01 Aparelho telefônico;\nXX Máquinas de cartão;\nXX Etiquetadora zebra;\n01 Dispensador de senhas;\nXX Plataforma elevatória para cadeirantes.', mobiliarios: 'XX Cadeiras ergonômicas com braços;\nXX Cadeiras para atendimento (Cadeira pipe - marca alberflex);\nXX Longarina pipe três lugares sem mesa - marca Alberflex;\nXX Longarina pipe dois lugares sem mesa - marca alberflex;\nXX Cadeiras em madeira (infantil).', movelarias: 'XX Guichês de atendimento em MDF branco com painel de vidro temperado;\nXX Guichê P.C.D.;\nXX Painel para TV em MDF;\nXX Bancada de apoio;\nXX Gaveteiro;\nXX Painéis com brinquedos.', acessorios: 'XX Dispensadores de álcool gel;\nXX Lixeiras infectantes com pedal;\nXX Lixeiras para papel e plástico.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba de encaixe;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
   { tipoId: 'boxColeta', nomeTemplate: 'Box de Coleta', definicao: 'Área destinada à coleta de sangue e raspagens;', atividades: 'Coleta de amostras.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno, com base sem braço cromada.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte com ventosas;\n01 Lixeira para resíduos comuns;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira em aço inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda de aço inox;\n01 Torneira com fechamento automático;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
   { tipoId: 'salaColeta', nomeTemplate: 'Sala de Coleta', definicao: 'Área destinada à coleta de curvas de tolerância a glicose e lactose, e repouso para realização de exames.', atividades: 'Coleta de amostras e repouso.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno;\nXX Poltrona reclinável para repouso.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte com ventosas;\n01 Lixeira para resíduos comuns;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira em aço inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda de aço inox;\n01 Torneira com fechamento automático;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
   { tipoId: 'coletaFeminina', nomeTemplate: 'Coleta Feminina (Ginecológica)', definicao: 'Área destinada a coleta ginecológica.', atividades: 'Coleta biológica.', equipamentos: '01 Foco clínico.', mobiliarios: '01 Banqueta giratória;\n01 Maca ginecológica com armação tubular, cabeceira e pés articuláveis, apoio para coxas estofado.', movelarias: '01 Gaveteiro em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Lavatório de canto;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
@@ -564,17 +560,17 @@ export default function App() {
       }
 
       let subIdx = 1;
-      let roomHTML = "<div class=\"avoid-break\" style=\"margin-bottom: 20px;\">";
-      roomHTML += "<h3 class=\"left-align\" style=\"color:#000; text-transform: uppercase;\">" + secAmb + "." + (i+1) + ". " + amb.nomePersonalizado.toUpperCase() + "</h3>";
+      let roomHTML = `<div class="avoid-break" style="margin-bottom: 20px;">`;
+      roomHTML += `<h3 class="left-align" style="color:#000; text-transform: uppercase;">${secAmb}.${i+1}. ${amb.nomePersonalizado.toUpperCase()}</h3>`;
 
       const addLine = (label, value) => {
         if(value && value !== 'Não se aplica' && value !== '') {
            const lines = value.toString().split('\n').filter(l => l.trim() !== '');
            let formattedValue = value;
            if (lines.length > 1) {
-              formattedValue = '<br>' + lines.map(l => '&bull; ' + l.trim()).join('<br>');
+              formattedValue = '<br>' + lines.map(l => `&bull; ${l.trim()}`).join('<br>');
            }
-           roomHTML += "<p><b>" + secAmb + "." + (i+1) + "." + subIdx + ". " + label + ":</b> " + formattedValue + "</p>";
+           roomHTML += `<p><b>${secAmb}.${i+1}.${subIdx}. ${label}:</b> ${formattedValue}</p>`;
            subIdx++;
         }
       };
@@ -600,7 +596,7 @@ export default function App() {
         addLine('Porta', descPorta);
       }
 
-      roomHTML += "</div>";
+      roomHTML += `</div>`;
       return roomHTML;
       
     }).join('') : '<p><i>Nenhum ambiente adicionado ao projeto.</i></p>';
@@ -1686,3 +1682,4 @@ export default function App() {
       </div>
     </div>
   );
+}
