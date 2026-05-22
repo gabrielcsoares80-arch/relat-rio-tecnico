@@ -57,7 +57,7 @@ const ENGENHEIROS = [
 
 const OPCOES_MATERIAIS = {
   fechamentosInt: ['Gesso Acartonado', 'Divisória Naval', 'Alvenaria', 'Existente'],
-  acabamentosInt: ['Pintura Acrílica (Branco Neve)', 'Pintura Acrílica (Branco Neve / Azul Del Rey)', 'Revestimento Cerâmico Branco', '1 parede com revestimento', 'Existente'],
+  acabamentosInt: ['Pintura Acrílica (Branco Neve)', 'Revestimento Cerâmico Branco', '1 parede com revestimento', 'Existente'],
   fechamentosExt: ['Alvenaria', 'Fachada de Vidro', 'Existente'],
   acabamentosExt: ['Pintura (Sol & Chuva Premium)', 'Existente'],
   pisos: ['Porcelanato Eliane (80x80cm)', 'Porcelanato Elizabeth (60x60cm)', 'Piso Intertravado', 'Existente'],
@@ -65,7 +65,7 @@ const OPCOES_MATERIAIS = {
   forros: ['Gesso Acartonado', 'Fibra Mineral', 'Laje de Concreto Existente'],
   esquadrias: [
     'Porta Pivotante em vidro temperado', 'Porta de correr em vidro', 'Porta de correr "mão amiga"',
-    'Kit Porta Pronta Pormade', 'Porta de giro em madeira (Dalcomad)', 'Porta tipo veneziana metálica',
+    'Kit Porta Pronta Pormade', 'Kit Porta pronta pormade correr', 'Porta de giro em madeira (Dalcomad)', 'Porta tipo veneziana metálica',
     'Porta sanfonada', 'Porta de enrolar em aço galvanizado', 'Existente'
   ]
 };
@@ -93,6 +93,7 @@ const DICIONARIO_TEXTOS = {
   'Kit Porta Pronta Pormade': 'Kit Porta Pronta Pormade branca lisa semioca, corpo do alizar branco de PVC Wood, fechaduras Pado Concept cromada.',
   'Porta de giro em madeira (Dalcomad)': 'Porta de giro em madeira - Kit Porta Branca lisa Dalcomad, com revestimento melanímico, semi-sólida.',
   'Porta tipo veneziana metálica': 'Porta tipo veneziana metálica em aço carbono #nº 16, com pintura branco neve metalatex; fechadura tipo tetra.',
+  'Kit porta de correr Pormade branca lisa semi oca, com marco e alizar em PVC Wood branco, ferragens cromadas e sistema de correr compatível com a linha Pormade.'
   'Porta sanfonada': 'Porta tipo sanfonada lisa em plástico de ambos os lados na cor Branca. Marca Plasbil ou similar.',
   'Porta de enrolar em aço galvanizado': 'Porta de enrolar em aço galvanizado de perfil liso, com pintura eletrostática prata cinza RAL 9006.'
 };
