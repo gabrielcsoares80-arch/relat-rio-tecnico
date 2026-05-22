@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Save, FileText, Building2, Users, MapPin, ChevronDown, Check, Activity, Clock, Trash2, FileSignature, Info, Route, UploadCloud, Upload, AlertCircle, X, Hammer, PaintBucket, DoorOpen, Square, Plus, LayoutGrid, Zap, Droplets, BookOpen, CheckCircle } from 'lucide-react';
+import { Save, FileText, Building2, Users, MapPin, ChevronDown, Check, Activity, Clock, Trash2, FileSignature, Info, Route, UploadCloud, AlertCircle, X, Hammer, PaintBucket, DoorOpen, Square, Plus, LayoutGrid, Droplets, Download, Image as ImageIcon } from 'lucide-react';
 
 // ============================================================================
 // 👇 COLE SEUS CÓDIGOS BASE64 AQUI DENTRO DAS ASPAS ("") 👇
@@ -38,9 +38,14 @@ const BOMBONAS_OPCOES = [
 ];
 
 const EMAILS_EQUIPE = [
-  'rafael.sa@sabin.com.br', 'lucas.ribeiro@sabin.com.br', 'miraglayce.nunes@sabin.com.br',
-  'naiara.sousa@sabin.com.br', 'ana.landrade@sabin.com.br', 'mayza.lima@sabin.com.br',
-  'claudia.avelar@sabin.com.br', 'gabriel.soares@sabin.com.br'
+  'claudia.avelar@sabin.com.br',
+  'gabriel.soares@sabin.com.br',
+  'julia.andrade@sabin.com.br',
+  'luana.lucchini@sabin.com.br',
+  'lucas.ribeiro@sabin.com.br',
+  'mayza.lima@sabin.com.br',
+  'miraglayce.nunes@sabin.com.br',
+  'rafael.sa@sabin.com.br'
 ];
 
 const ENGENHEIROS = [
@@ -52,7 +57,7 @@ const ENGENHEIROS = [
 
 const OPCOES_MATERIAIS = {
   fechamentosInt: ['Gesso Acartonado', 'Divisória Naval', 'Alvenaria', 'Existente'],
-  acabamentosInt: ['Pintura Acrílica (Branco Neve)', 'Pintura Acrílica (Branco Neve / Azul Del Rey)', 'Revestimento Cerâmico Branco', '1 parede com revestimento (restante pintura) com as mesma especificações.', 'Existente'],
+  acabamentosInt: ['Pintura Acrílica (Branco Neve)', 'Pintura Acrílica (Branco Neve / Azul Del Rey)', 'Revestimento Cerâmico Branco', '1 parede com revestimento', 'Existente'],
   fechamentosExt: ['Alvenaria', 'Fachada de Vidro', 'Existente'],
   acabamentosExt: ['Pintura (Sol & Chuva Premium)', 'Existente'],
   pisos: ['Porcelanato Eliane (80x80cm)', 'Porcelanato Elizabeth (60x60cm)', 'Piso Intertravado', 'Existente'],
@@ -73,7 +78,7 @@ const DICIONARIO_TEXTOS = {
   'Pintura Acrílica (Branco Neve)': 'Pintura com Tinta Acrílica para parede interna, com acabamento acetinado, liso, lavável e impermeável, na cor Branco Neve – marca Coral. Resistente à lavagem e ao uso de desinfetante.',
   'Pintura Acrílica (Branco Neve / Azul Del Rey)': 'Paredes pintadas com tinta acrílica Branco Neve e uma parede especial pintada na cor Azul Del Rey - marca Coral. Resistente à lavagem e ao uso de desinfetante.',
   'Revestimento Cerâmico Branco': 'Revestimento cerâmico marca Eliane/Incesa, modelo Branco Brilhante Retificado. Material monolítico (homogêneo e impermeável), vitrificado e com juntas de assentamento de 1mm.',
-  '1 parede com revestimento (restante pintura) com as mesma especificações.': 'Uma parede com revestimento cerâmico e as demais com pintura acrílica, mantendo as especificações de impermeabilidade e facilidade de higienização recomendadas para o ambiente.',
+  '1 parede com revestimento': 'Paredes pintadas com tinta acrílica na cor Branco Neve e uma parede em revestimento cerâmico branco (completar com informação do revestimento que já conversamos).',
   'Pintura (Sol & Chuva Premium)': 'Pintura com Tinta Acrílica PVA/Látex Fosco Proteção Sol & Chuva Premium, cor Branco – Coral.',
   'Porcelanato Eliane (80x80cm)': 'Porcelanato marca Eliane bege, polido, brilhante e retificado – 80x80cm, espessura de 9mm, Linha BIANCO PLUS PO. Acabamento em rejunte cimentício acrílico Quartzolit Weber, cor Corda. Absorção de água menor de 4%.',
   'Porcelanato Elizabeth (60x60cm)': 'Porcelanato marca Elizabeth bege, polido, brilhante e retificado – 60x60cm, espessura de 9mm, Linha BIANCO MASTER PO. Acabamento em rejunte cimentício acrílico Quartzolit. Absorção de água menor de 4%.',
@@ -93,204 +98,31 @@ const DICIONARIO_TEXTOS = {
 };
 
 const OPCOES_RDC = [
-  { 
-    id: 'coleta', 
-    label: 'Posto de Coleta e Laboratório (Patologia Clínica)', 
-    content: `<i>4.1.3- Fazer análise e procedimentos laboratoriais de substâncias ou materiais biológicos com finalidade diagnóstica e de pesquisa;<br>
-    4.1.4- Fazer o preparo de reagentes/soluções;<br>
-    4.1.5- Fazer a desinfecção do material analisado a ser descartado;<br>
-    4.1.6- Fazer a lavagem e preparo do material utilizado; e<br>
-    4.1.7- Emitir laudo das análises realizadas.<br>
-    4.4-Anatomia patológica e citopatologia:<br>
-    4.4.1-Receber e registrar o material para análise (peças, esfregaços, líquidos, secreções e cadáveres);<br>
-    4.4.2-Fazer a triagem do material recebido;</i>`
-  },
-  { 
-    id: 'imagem', 
-    label: 'Diagnóstico por Imagem e Métodos Gráficos', 
-    content: `<i>4.2-Imagenologia:<br>
-    4.2.1-Proceder à consulta e exame clínico de pacientes;<br>
-    4.2.2-Preparar o paciente;<br>
-    4.2.3-Assegurar a execução de procedimentos pré-anestésicos e realizar procedimentos anestésicos;<br>
-    4.2.4-Proceder a lavagem cirúrgica das mãos;<br>
-    4.2.5-Realizar exames diagnósticos e intervenções terapêuticas:<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;a) Por meio da radiologia através dos resultados de estudos fluoroscópicos ou radiográficos;<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;b) Por meio da radiologia cardiovascular, usualmente recorrendo a cateteres e injeções de contraste. Executam-se também procedimentos terapêuticos como angioplastia, drenagens e embolizações terapêuticas;<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;c) Por meio da tomografia- através do emprego de radiações ionizantes;<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;d) Por meio da ultrassonografia- através dos resultados dos estudos ultrassonográficos;<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;e) Por meio da ressonância magnética- através de técnica que utiliza campos magnéticos;<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;f) Por meio de endoscopia digestiva e respiratória;<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;g) Por outros meios;<br>
-    4.2.6-Elaborar relatórios médicos e de enfermagem e registros dos procedimentos realizados;<br>
-    4.2.7-Proporcionar cuidados pós-anestésicos e pós procedimentos;<br>
-    4.2.8-Assegurar atendimento de emergência;<br>
-    4.2.9-Realizar o processamento da imagem;<br>
-    4.2.10-Interpretar as imagens e emitir o laudo dos exames realizados;<br>
-    4.2.11-Guardar e preparar chapas, filmes e contrastes;<br>
-    4.2.12-Zelar pela proteção e segurança de pacientes e operadores; e<br>
-    4.2.13-Assegurar o processamento do material biológico coletado nas endoscopias.<br>
-    4.3-Métodos gráficos:<br>
-    4.3.1-Preparar o paciente;<br>
-    4.3.2-Realizar os exames que são representados por traçados gráficos aplicados em papel ou em filmes especiais, tais como: eletrocardiograma, eco cardiograma, ergometria, fonocardiograma, veto cardiograma, eletroencefalograma, potenciais evocados, etc.; e<br>
-    4.3.3-Emitir laudo dos exames realizados.</i>`
-  },
-  { 
-    id: 'atencao', 
-    label: 'Atenção Primária e Imunização', 
-    content: `<i>1.1 - Promoção e Prevenção à Saúde:<br>
-    Prestação de atendimento de apoio; Proceder a aplicação de imunobiológicos (vacinas); Acompanhamento e observação pós-vacinal; Armazenar e controlar a temperatura dos imunobiológicos.</i>`
-  }
+  { id: 'coleta', label: 'Posto de Coleta e Laboratório (Patologia Clínica)', content: `<i>4.1.3- Fazer análise e procedimentos laboratoriais de substâncias ou materiais biológicos com finalidade diagnóstica e de pesquisa;<br>4.1.4- Fazer o preparo de reagentes/soluções;<br>4.1.5- Fazer a desinfecção do material analisado a ser descartado;<br>4.1.6- Fazer a lavagem e preparo do material utilizado; e<br>4.1.7- Emitir laudo das análises realizadas.<br>4.4-Anatomia patológica e citopatologia:<br>4.4.1-Receber e registrar o material para análise (peças, esfregaços, líquidos, secreções e cadáveres);<br>4.4.2-Fazer a triagem do material recebido;</i>` },
+  { id: 'imagem', label: 'Diagnóstico por Imagem e Métodos Gráficos', content: `<i>4.2-Imagenologia:<br>4.2.1-Proceder à consulta e exame clínico de pacientes;<br>4.2.2-Preparar o paciente;<br>4.2.3-Assegurar a execução de procedimentos pré-anestésicos e realizar procedimentos anestésicos;<br>4.2.4-Proceder a lavagem cirúrgica das mãos;<br>4.2.5-Realizar exames diagnósticos e intervenções terapêuticas:<br>&nbsp;&nbsp;&nbsp;&nbsp;a) Por meio da radiologia através dos resultados de estudos fluoroscópicos ou radiográficos;<br>&nbsp;&nbsp;&nbsp;&nbsp;b) Por meio da radiologia cardiovascular, usualmente recorrendo a cateteres e injeções de contraste. Executam-se também procedimentos terapêuticos como angioplastia, drenagens e embolizações terapêuticas;<br>&nbsp;&nbsp;&nbsp;&nbsp;c) Por meio da tomografia- através do emprego de radiações ionizantes;<br>&nbsp;&nbsp;&nbsp;&nbsp;d) Por meio da ultrassonografia- através dos resultados dos estudos ultrassonográficos;<br>&nbsp;&nbsp;&nbsp;&nbsp;e) Por meio da ressonância magnética- através de técnica que utiliza campos magnéticos;<br>&nbsp;&nbsp;&nbsp;&nbsp;f) Por meio de endoscopia digestiva e respiratória;<br>&nbsp;&nbsp;&nbsp;&nbsp;g) Por outros meios;<br>4.2.6-Elaborar relatórios médicos e de enfermagem e registros dos procedimentos realizados;<br>4.2.7-Proporcionar cuidados pós-anestésicos e pós procedimentos;<br>4.2.8-Assegurar atendimento de emergência;<br>4.2.9-Realizar o processamento da imagem;<br>4.2.10-Interpretar as imagens e emitir o laudo dos exames realizados;<br>4.2.11-Guardar e preparar chapas, filmes e contrastes;<br>4.2.12-Zelar pela proteção e segurança de pacientes e operadores; e<br>4.2.13-Assegurar o processamento do material biológico coletado nas endoscopias.<br>4.3-Métodos gráficos:<br>4.3.1-Preparar o paciente;<br>4.3.2-Realizar os exames que são representados por traçados gráficos aplicados em papel ou em filmes especiais, tais como: eletrocardiograma, eco cardiograma, ergometria, fonocardiograma, veto cardiograma, eletroencefalograma, potenciais evocados, etc.; e<br>4.3.3-Emitir laudo dos exames realizados.</i>` },
+  { id: 'atencao', label: 'Atenção Primária e Imunização', content: `<i>1.1 - Promoção e Prevenção à Saúde:<br>Prestação de atendimento de apoio; Proceder a aplicação de imunobiológicos (vacinas); Acompanhamento e observação pós-vacinal; Armazenar e controlar a temperatura dos imunobiológicos.</i>` }
 ];
 
 const AMBIENTES_DB = [
-  {
-    tipoId: 'recepcao', nomeTemplate: 'Recepção',
-    definicao: 'Área climatizada, ampla, destinada a recepcionar, atender e orientar pacientes, acompanhantes, recebimento de materiais de exames, além de identificar e registrar dados de acesso.',
-    atividades: 'Acolhimento; Orientação do Fluxo de circulação; Admissão de Pacientes; Identificação no acesso; Identificação do material biológico; Informações gerais; Resultado de exames; Espaço Infantil.',
-    equipamentos: 'XX Televisões de 43 polegadas para a senha; XX Computadores; XX Impressora a laser multiprofissional; XX Aparelho telefônico; XX Máquinas de cartão; XX Etiquetadora zebra; XX Dispensador de senhas; XX Plataforma elevatória para cadeirantes.',
-    mobiliarios: 'XX Cadeiras ergonômicas com braços; XX Cadeiras para atendimento (Boston base fixa); XX Longarinas Boston azul com 03 lugares; XX Longarinas Boston azul com 02 lugares; XX Cadeiras em madeira (infantil).',
-    movelarias: 'XX Guichês de atendimento em MDF branco com painel de vidro temperado; XX Guichê P.C.D.; XX Painel para TV em MDF; XX Bancada de apoio; XX Gaveteiro; XX Painéis com brinquedos.',
-    acessorios: 'XX Dispensadores de álcool gel; XX Lixeiras biológicas com pedal; XX Lixeiras para papel e plástico.',
-    infraestrutura: '01 Cuba de encaixe; 01 Torneira com fechamento automático; XX Ar-condicionado Split; XX Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'coleta', nomeTemplate: 'Sala de Coleta (Padrão)',
-    definicao: 'Área destinada à coleta de sangue e raspagens.',
-    atividades: 'Coleta de amostras.',
-    equipamentos: 'Não se aplica',
-    mobiliarios: 'XX Cadeira fixa de 4 pés, com assento em polipropileno, com base sem braço cromada.',
-    movelarias: '01 Armário em MDF branco impermeável com pia acoplada; 01 Colmeia para tubos em MDF branco.',
-    acessorios: '01 Dispensador de álcool gel; 01 Dispensador de papel toalha; 01 Dispensador de sabonete líquido; 01 Caixa de Descarpack em suporte com ventosas; 01 Lixeira para resíduos comuns; 01 Lixeira infectante com pedal; 01 Cabideiro inox; XX Braçadeira em aço inox.',
-    infraestrutura: '01 Cuba redonda de aço inox; 01 Torneira com fechamento automático; 01 Ar-condicionado Split; 01 Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'coletaFeminina', nomeTemplate: 'Coleta Feminina (Ginecológica)',
-    definicao: 'Área destinada a coleta ginecológica.',
-    atividades: 'Coleta biológica.',
-    equipamentos: '01 Foco clínico.',
-    mobiliarios: '01 Banqueta giratória; 01 Maca ginecológica com armação tubular, cabeceira e pés articuláveis, apoio para coxas estofado.',
-    movelarias: '01 Gaveteiro em MDF branco.',
-    acessorios: '01 Dispensador de álcool gel; 01 Dispensador de papel toalha; 01 Dispensador de sabonete líquido; 01 Caixa de Descarpack em suporte; 01 Lixeira comum; 01 Lixeira infectante com pedal; 01 Cabideiro inox.',
-    infraestrutura: '01 Lavatório de canto; 01 Torneira com fechamento automático; XX Ar-condicionado Split; XX Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'coletaMaca', nomeTemplate: 'Coleta com Maca',
-    definicao: 'Área destinada à coleta de sangue e raspagens para pacientes que exigem repouso.',
-    atividades: 'Coleta de amostras.',
-    equipamentos: 'Não se aplica',
-    mobiliarios: '01 Cadeira fixa de 4 pés cromada; 01 Maca móvel articulável em 3 partes com leito estofado.',
-    movelarias: '01 Armário em MDF branco impermeável com pia acoplada; 01 Colmeia para tubos em MDF branco.',
-    acessorios: '01 Dispensador de álcool gel; 01 Dispensador de papel toalha; 01 Dispensador de sabonete líquido; 01 Caixa de Descarpack; 01 Lixeira comum; 01 Lixeira infectante com pedal; 01 Cabideiro inox; 01 Braçadeira inox.',
-    infraestrutura: '01 Cuba redonda inox; 01 Torneira automática; 01 Ar-condicionado Split; 01 Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'consultorio', nomeTemplate: 'Consultório Indiferenciado',
-    definicao: 'Ambiente destinado às ações de prevenção à saúde relacionado ao processo de imunização.',
-    atividades: 'Prevenção e consulta pré-imunização.',
-    equipamentos: '01 Balança antropométrica mecânica; 01 Computador; 01 Negatoscópio.',
-    mobiliarios: 'XX Cadeiras ergonômicas com braços; XX Cadeiras para atendimento (Bambu Artesian TEA); 01 Puff Redondo.',
-    movelarias: '01 Maca em MDF com colchão em couro ecológico; 01 Bancada em MDF para computador; 01 Armário em MDF para brinquedos (TEA).',
-    acessorios: '01 Dispensador de álcool gel; 01 Dispensador de papel toalha; 01 Dispensador de sabonete líquido; 01 Caixa de Descarpack; 01 Lixeira comum; 01 Lixeira papel; 01 Lixeira plástico; 01 Escada metálica para maca; 01 Manta Ponderada Preta (TEA).',
-    infraestrutura: '01 Lavatório de canto; 01 Torneira de enxágue; 01 Ar-condicionado Split; 01 Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'imunizacao', nomeTemplate: 'Sala de Imunização',
-    definicao: 'Área destinada à aplicação de um imunobiológico dentro de todos os padrões corretos de conservação, armazenagem e indicações clínicas.',
-    atividades: 'Armazenamento e Aplicação de Vacinas.',
-    equipamentos: 'XX Refrigerador expositor com circuito independente; XX Freezer vertical Frost Free; 02 Caixas térmicas de 45 litros; 01 Kit de oxigênio de 5 litros; 01 Computador.',
-    mobiliarios: '02 Cadeiras fixa de 4 pés cromada; 01 Braçadeira em aço inox; 01 Cadeira ergonômica com braços.',
-    movelarias: '01 Armário em MDF embutido na bancada; 01 Maca em MDF com colchão em couro ecológico; 01 Mesa em MDF para computador.',
-    acessorios: '01 Dispensador de álcool gel; 01 Dispensador de papel toalha; 01 Dispensador de sabonete líquido; 01 Caixa de Descarpack; 01 Lixeira comum; 01 Lixeira infectante com pedal; 01 Cabideiro inox; 01 Escada metálica.',
-    infraestrutura: '01 Pia de aço inox; 01 Torneira com fechamento automático; XX Ar-condicionado Split; XX Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'copa', nomeTemplate: 'Copa / Café',
-    definicao: 'Área destinada ao preparo de alimentos para o desjejum dos clientes.',
-    atividades: 'Preparo de alimentos e bebidas.',
-    equipamentos: '01 Refrigerador de 310 litros duplex; 01 Freezer vertical de 110 litros; 01 Liquidificador; 01 Forno elétrico profissional.',
-    mobiliarios: 'XX Banquetas médias com estrutura em alumínio e assento branco.',
-    movelarias: 'XX Armário em MDF branco embutido na bancada; 01 Armário superior em MDF branco e nicho para microondas.',
-    acessorios: '01 Dispensador de álcool gel; 01 Dispensador de papel toalha; 01 Lixeira plástico; 01 Lixeira orgânicos com pedal.',
-    infraestrutura: '01 Pia de aço inox; 01 Torneira de enxágue; XX Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'classificacao', nomeTemplate: 'Sala de Classificação e Distribuição de Amostras',
-    definicao: 'Área destinada a recebimento, classificação, centrifugação das amostras coletadas diariamente e medição das amostras de urina de 24 horas.',
-    atividades: 'Recebimento e processamento primário de amostras.',
-    equipamentos: '01 Refrigerador; 01 Banho Maria; 01 Centrífuga; 01 Computador; 01 Leitor de código de barras.',
-    mobiliarios: 'XX Cadeira ergonômica alta.',
-    movelarias: 'XX Armário em MDF branco embutido na bancada; XX Bancada em MDF para computador; XX Armário superior em MDF.',
-    acessorios: '01 Dispensador de álcool gel; 01 Dispensador de sabonete líquido; 01 Dispensador de papel toalha; 01 Lixeira comum; 01 Lixeira infectante com pedal; 01 Caixa de Descarpack.',
-    infraestrutura: 'XX Pia em aço inox; XX Torneira de enxágue automática; XX Ar-condicionado Split; XX Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'sanitario_pcd', nomeTemplate: 'Sanitário P.C.D.',
-    definicao: 'Área destinada exclusivamente aos pacientes.',
-    atividades: 'Higiene pessoal.',
-    equipamentos: 'Não se aplica',
-    mobiliarios: 'Não se aplica',
-    movelarias: 'Não se aplica',
-    acessorios: '02 Barras de apoio horizontais; 01 Barra de apoio na vertical; 02 Barras de apoio verticais para o lavatório; 01 Lixeira para RSS; 01 Porta protetor para assento; 01 Dispensador de papel higiênico; 01 Dispensador papel toalha; 01 Dispensador sabonete; 01 Espelho bisotado.',
-    infraestrutura: '01 Bacia sanitária; 01 Cuba de encaixe; 01 Torneira automática; 01 Ducha higiênica; 01 Ralo sifonado; 01 Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'sanitario', nomeTemplate: 'Sanitário Padrão',
-    definicao: 'Área destinada exclusivamente aos pacientes (ou funcionários).',
-    atividades: 'Higiene pessoal.',
-    equipamentos: 'Não se aplica',
-    mobiliarios: 'Não se aplica',
-    movelarias: 'Não se aplica',
-    acessorios: '01 Lixeira para RSS; 01 Dispensador de protetor para assento; 01 Dispensador de papel higiênico; 01 Dispensador papel toalha; 01 Dispensador sabonete; 01 Espelho bisotado.',
-    infraestrutura: '01 Bacia sanitária; 01 Cuba de encaixe; 01 Torneira automática; 01 Ducha higiênica; 01 Ralo sifonado; 01 Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'dml', nomeTemplate: 'D.M.L. (Depósito de Material de Limpeza)',
-    definicao: 'Área destinada à guarda de equipamentos designados para limpeza, assim como lavagem de panos, desprezo de água e produtos de limpeza.',
-    atividades: 'Higienização; Armazenamento.',
-    equipamentos: 'Não se aplica',
-    mobiliarios: 'Não se aplica',
-    movelarias: '01 Armário superior em MDF; 01 Armário em MDF para guarda de rodos e vassouras.',
-    acessorios: 'Não se aplica',
-    infraestrutura: '01 Tanque para lavagem de panos; 01 Torneira de enxágue; 01 Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'atr_inf', nomeTemplate: 'A.T.R. - Resíduos Infectantes',
-    definicao: 'Área destinada à guarda de resíduos temporários, sendo esses infectantes. As bombonas são recolhidas por empresa especializada.',
-    atividades: 'Armazenamento temporário.',
-    equipamentos: 'Não se aplica',
-    mobiliarios: 'Não se aplica',
-    movelarias: 'Não se aplica',
-    acessorios: 'XX Bombonas tipo container com pedal; XX Pallets plástico preto com carga estimada de 500 kg.',
-    infraestrutura: '01 Torneira de enxágue; 01 Ralo sifonado; 01 Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'atr_comum', nomeTemplate: 'A.T.R. - Resíduos Comuns',
-    definicao: 'Área destinada à guarda temporária dos recipientes contendo resíduos comuns. As bombonas são recolhidas por empresa especializada.',
-    atividades: 'Armazenamento temporário.',
-    equipamentos: 'Não se aplica',
-    mobiliarios: 'Não se aplica',
-    movelarias: 'Não se aplica',
-    acessorios: 'XX Bombonas tipo container com pedal; XX Pallets plástico preto.',
-    infraestrutura: '01 Torneira de enxágue; 01 Ralo sifonado; 01 Ventilação mecânica.',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  },
-  {
-    tipoId: 'generico', nomeTemplate: 'Ambiente Genérico (Manual)',
-    definicao: '', atividades: '', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'Não se aplica', infraestrutura: '',
-    area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
-  }
+  { tipoId: 'recepcao', nomeTemplate: 'Recepção', definicao: 'Área climatizada, ampla, destinada a recepcionar, atender e orientar pacientes, acompanhantes, recebimento de materiais de exames, além de identificar e registrar dados de acesso.', atividades: 'Acolhimento;\nOrientação do Fluxo de circulação;\nAdmissão de Pacientes;\nIdentificação no acesso;\nIdentificação do material biológico;\nInformações gerais;\nResultado de exames;\nEspaço Infantil.', equipamentos: 'XX Televisões de 43 polegadas para a senha;\nXX Computadores;\nXX Impressora a laser multiprofissional;\nXX Aparelho telefônico;\nXX Máquinas de cartão;\nXX Etiquetadora zebra;\nXX Dispensador de senhas;\nXX Plataforma elevatória para cadeirantes.', mobiliarios: 'XX Cadeiras ergonômicas com braços;\nXX Cadeiras para atendimento (Boston base fixa);\nXX Longarinas Boston azul com 03 lugares;\nXX Longarinas Boston azul com 02 lugares;\nXX Cadeiras em madeira (infantil).', movelarias: 'XX Guichês de atendimento em MDF branco com painel de vidro temperado;\nXX Guichê P.C.D.;\nXX Painel para TV em MDF;\nXX Bancada de apoio;\nXX Gaveteiro;\nXX Painéis com brinquedos.', acessorios: 'XX Dispensadores de álcool gel;\nXX Lixeiras infectantes com pedal;\nXX Lixeiras para papel e plástico.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba de encaixe;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'boxColeta', nomeTemplate: 'Box de Coleta', definicao: 'Área destinada à coleta de sangue e raspagens;', atividades: 'Coleta de amostras.', equipamentos: 'Não se aplica', mobiliarios: 'XX Cadeira fixa de 4 pés, com assento em polipropileno, com base sem braço cromada.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte com ventosas;\n01 Lixeira para resíduos comuns;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\nXX Braçadeira em aço inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda de aço inox;\n01 Torneira com fechamento automático;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'salaColeta', nomeTemplate: 'Sala de Coleta', definicao: 'Área destinada à coleta de curvas de tolerância a glicose e lactose, e repouso para realização de exames.', atividades: 'Coleta de amostras e repouso.', equipamentos: 'Não se aplica', mobiliarios: 'XX Cadeira fixa de 4 pés, com assento em polipropileno;\n01 Poltrona reclinável para repouso.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte com ventosas;\n01 Lixeira para resíduos comuns;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\nXX Braçadeira em aço inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda de aço inox;\n01 Torneira com fechamento automático;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'coletaFeminina', nomeTemplate: 'Coleta Feminina (Ginecológica)', definicao: 'Área destinada a coleta ginecológica.', atividades: 'Coleta biológica.', equipamentos: '01 Foco clínico.', mobiliarios: '01 Banqueta giratória;\n01 Maca ginecológica com armação tubular, cabeceira e pés articuláveis, apoio para coxas estofado.', movelarias: '01 Gaveteiro em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Lavatório de canto;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'coletaMaca', nomeTemplate: 'Box de Coleta com Maca', definicao: 'Área destinada à coleta de sangue e raspagens para pacientes que exigem repouso.', atividades: 'Coleta de amostras.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés cromada;\n01 Maca móvel articulável em 3 partes com leito estofado.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda inox;\n01 Torneira automática;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'coletaMasculina', nomeTemplate: 'Coleta Masculina', definicao: 'Área destinada à coleta do exame Espermograma.', atividades: 'Coleta biológica;', equipamentos: '01 Televisão de 32 polegadas;', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno, com base sem braço cromada;', movelarias: '01 Nicho de apoio em MDF;', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de sabonete líquido;\n01 Dispensador de papel toalha;\n01 Lixeira para resíduos comuns;\n01 Lixeira com acionamento por pedal para resíduos infectantes;', marmoraria: 'Não se aplica', infraestrutura: '01 Ar-condicionado Split;\n01 Ventilação mecânica;\n01 Lavatório de canto;\n01 Torneira com fechamento automático;\n01 Ralo sifonado;', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'consultorio', nomeTemplate: 'Consultório Indiferenciado', definicao: 'Ambiente destinado às ações de prevenção à saúde relacionado ao processo de imunização.', atividades: 'Prevenção e consulta pré-imunização.', equipamentos: '01 Balança antropométrica mecânica;\n01 Computador;\n01 Negatoscópio.', mobiliarios: 'XX Cadeiras ergonômicas com braços;\nXX Cadeiras para atendimento (Bambu Artesian TEA);\n01 Puff Redondo.', movelarias: '01 Maca em MDF com colchão em couro ecológico;\n01 Bancada em MDF para computador;\n01 Armário em MDF para brinquedos (TEA).', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira papel;\n01 Lixeira plástico;\n01 Escada metálica para maca;\n01 Manta Ponderada Preta (TEA).', marmoraria: 'Não se aplica', infraestrutura: '01 Lavatório de canto;\n01 Torneira de enxágue;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'imunizacao', nomeTemplate: 'Sala de Imunização', definicao: 'Área destinada à aplicação de um imunobiológico dentro de todos os padrões corretos de conservação, armazenagem e indicações clínicas.', atividades: 'Armazenamento e Aplicação de Vacinas.', equipamentos: 'XX Refrigerador expositor com circuito independente;\nXX Freezer vertical Frost Free;\n02 Caixas térmicas de 45 litros;\n01 Kit de oxigênio de 5 litros;\n01 Computador.', mobiliarios: '02 Cadeiras fixa de 4 pés cromada;\n01 Braçadeira em aço inox;\n01 Cadeira ergonômica com braços.', movelarias: '01 Armário em MDF embutido na bancada;\n01 Maca em MDF com colchão em couro ecológico;\n01 Mesa em MDF para computador.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Escada metálica.', marmoraria: 'Não se aplica', infraestrutura: '01 Pia de aço inox;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'desjejum', nomeTemplate: 'Área para desjejum', definicao: 'Área destinada ao desjejum após a coleta de sangue.', atividades: 'Acolhimento;\nDesjejum;', equipamentos: '01 Filtro purificador de água potável;\n01 Máquina de café;', mobiliarios: 'XX Banquetas médias com estrutura em alumínio e assento branco;', movelarias: '01 Armário inferior modulado em MDF;', acessorios: '01 Dispensador de copos descartáveis;\n01 Dispensador de álcool em gel;\n01 Lixeira com acionamento por pedal para resíduos orgânicos;\n01 Lixeira em coluna para copos de plástico;\n01 Lixeira para resíduos comuns;', marmoraria: 'XX Bancadas em granito Especificar Cor;', infraestrutura: '01 Pia de aço inox;\n01 Torneira de enxágue;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'copa', nomeTemplate: 'Copa', definicao: 'Área destinada ao preparo de alimentos para o desjejum dos clientes.', atividades: 'Preparo de alimentos e bebidas;', equipamentos: '01 Refrigerador de 310 litros duplex;\n01 Freezer vertical de 110 litros;\n01 Liquidificador;\n01 Forno elétrico profissional;', mobiliarios: 'Não se aplica', movelarias: 'XX Armário em MDF branco embutido na bancada de granito;\n01 Armário superior em MDF branco e nicho para microondas;', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Lixeira para resíduos de plástico;\n01 Lixeira de acionamento por pedal para resíduos orgânicos;', marmoraria: 'XX Bancada em granito Especificar Cor;', infraestrutura: '01 Pia de aço inox;\n01 Torneira de enxague;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'classificacao', nomeTemplate: 'Sala de Classificação e Distribuição de Amostras', definicao: 'Área destinada a recebimento, classificação, centrifugação das amostras coletadas diariamente e medição das amostras de urina de 24 horas.', atividades: 'Recebimento e processamento primário de amostras.', equipamentos: '01 Refrigerador;\n01 Banho Maria;\n01 Centrífuga;\n01 Computador;\n01 Leitor de código de barras.', mobiliarios: 'XX Cadeira ergonômica alta.', movelarias: 'XX Armário em MDF branco embutido na bancada;\nXX Bancada em MDF para computador;\nXX Armário superior em MDF.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de sabonete líquido;\n01 Dispensador de papel toalha;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Recipiente para descarte de materiais perfuro cortantes.', marmoraria: 'Não se aplica', infraestrutura: 'XX Pia em aço inox;\nXX Torneira de enxágue automática;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'sanitario_pcd', nomeTemplate: 'Sanitário P.C.D.', definicao: 'Área destinada exclusivamente aos pacientes.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '02 Barras de apoio horizontais;\n01 Barra de apoio na vertical;\n02 Barras de apoio verticais para o lavatório;\n01 Lixeira para RSS;\n01 Porta protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'sanitario', nomeTemplate: 'Sanitário Padrão', definicao: 'Área destinada exclusivamente aos pacientes.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '01 Lixeira para RSS;\n01 Dispensador de protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'sanitarioFunc', nomeTemplate: 'Sanitário de Funcionários', definicao: 'Área destinada exclusivamente aos funcionários.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '01 Lixeira para RSS;\n01 Dispensador de protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'dml', nomeTemplate: 'D.M.L. (Depósito de Material de Limpeza)', definicao: 'Área destinada à guarda de equipamentos designados para limpeza, assim como lavagem de panos, desprezo de água e produtos de limpeza.', atividades: 'Higienização;\nArmazenamento.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: '01 Armário superior em MDF;\n01 Armário em MDF para guarda de rodos e vassouras.', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: '01 Tanque para lavagem de panos;\n01 Torneira de enxágue;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'salaRack', nomeTemplate: 'Sala Rack', definicao: 'Local destinado à guarda do rack de dados.', atividades: 'Não se aplica', equipamentos: 'XX Equipamento de Rack;', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: 'XX Ar-condicionado Split;', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'atr_inf', nomeTemplate: 'A.T.R. - Resíduos Infectantes', definicao: 'Área destinada à guarda de resíduos temporários, sendo esses infectantes. As bombonas são recolhidas por empresa especializada.', atividades: 'Armazenamento temporário.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'XX Bombonas tipo container com pedal;\nXX Pallets plástico preto com carga estimada de 500 kg.', marmoraria: 'Não se aplica', infraestrutura: '01 Torneira de enxágue;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'atr_comum', nomeTemplate: 'A.T.R. - Resíduos Comuns', definicao: 'Área destinada à guarda temporária dos recipientes contendo resíduos comuns. As bombonas são recolhidas por empresa especializada.', atividades: 'Armazenamento temporário.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'XX Bombonas tipo container com pedal;\nXX Pallets plástico preto.', marmoraria: 'Não se aplica', infraestrutura: '01 Torneira de enxágue;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'generico', nomeTemplate: 'Ambiente Genérico (Manual)', definicao: '', atividades: '', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: '', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } }
 ];
 
 const formatMask = (name, value) => {
@@ -314,7 +146,6 @@ const formatMask = (name, value) => {
   return value;
 };
 
-// ================= COMPONENTE PRINCIPAL =================
 export default function App() {
   const [activeTab, setActiveTab] = useState('identificacao');
   const [emailDropdownOpen, setEmailDropdownOpen] = useState(false);
@@ -322,27 +153,25 @@ export default function App() {
   const [isEngenheiroManual, setIsEngenheiroManual] = useState(false);
   const [isCnaeManual, setIsCnaeManual] = useState(false);
   const [showRevitInfo, setShowRevitInfo] = useState(false);
+  const [exportDropdownOpen, setExportDropdownOpen] = useState(false);
 
-  // ================= ESTADO FASE 1: IDENTIFICAÇÃO =================
   const [identificacao, setIdentificacao] = useState({
     tipoProjeto: 'PBA – Projeto Básico de Arquitetura',
     razaoSocial: '', nomeFantasia: '', nomeUnidade: '', cidade: '', uf: '', endereco: '', cep: '', cnpj: '',
     cnaesSelecionados: [], cnaeManual: '', telefoneEngenharia: '', emailsSelecionados: [],
     
-    // Multiplos Pavimentos
     possuiSubsolo: false, qtdSubsolos: '1', subsolos: [{ area: '', ambientes: '' }],
     possuiTerreo: true, terreo: { area: '', ambientes: '' },
     possuiAndares: false, qtdAndares: '1', andares: [{ area: '', ambientes: '' }],
     
-    // Multiplos RTs e Legal
     respTecnicos: [{ nome: '', conselho: '' }],
     isRespLegalManual: false,
     respLegal: 'Lídia Freire Abdalla Nery', cpfRespLegal: '693.909.246-34',
     
-    respProjeto: '', creaCauProjeto: ''
+    respProjeto: '', creaCauProjeto: '',
+    imagemCapa: null
   });
 
-  // ================= ESTADO FASE 2: ATENDIMENTO =================
   const [atendimento, setAtendimento] = useState({
     atividade: ATIVIDADES_OPCOES[0],
     atividadeManual: '',
@@ -352,7 +181,8 @@ export default function App() {
     qtdBombonasTotal: '', tipoBombona: '100',
     qtdComum: '', qtdInfectante: '', qtdQuimico: '', qtdPerfurocortante: '',
     rssRazaoSocial: '', rssNomeFantasia: '', rssCnpj: '', rssInscricaoMunicipal: '', rssEndereco: '', rssCep: '',
-    possuiFornecedor2: false, rss2RazaoSocial: '', rss2NomeFantasia: '', rss2Cnpj: '', rss2InscricaoMunicipal: '', rss2Endereco: '', rss2Cep: ''
+    possuiFornecedor2: false, rss2RazaoSocial: '', rss2NomeFantasia: '', rss2Cnpj: '', rss2InscricaoMunicipal: '', rss2Endereco: '', rss2Cep: '',
+    imagemEmbalagens: null
   });
 
   const [fluxos, setFluxos] = useState({
@@ -386,12 +216,21 @@ export default function App() {
     stateSetter(prev => ({ ...prev, [name]: maskedValue }));
   };
 
+  const handleBase64Upload = (stateSetter, key, event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        stateSetter(prev => ({ ...prev, [key]: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleEmailToggle = (email) => {
     setIdentificacao(prev => ({
       ...prev,
-      emailsSelecionados: prev.emailsSelecionados.includes(email)
-        ? prev.emailsSelecionados.filter(e => e !== email)
-        : [...prev.emailsSelecionados, email]
+      emailsSelecionados: prev.emailsSelecionados.includes(email) ? prev.emailsSelecionados.filter(e => e !== email) : [...prev.emailsSelecionados, email]
     }));
   };
 
@@ -402,7 +241,6 @@ export default function App() {
     });
   };
 
-  // --- Multiplos RTs Handlers ---
   const handleAddRT = () => setIdentificacao(prev => ({ ...prev, respTecnicos: [...prev.respTecnicos, { nome: '', conselho: '' }] }));
   const handleRemoveRT = (index) => setIdentificacao(prev => ({ ...prev, respTecnicos: prev.respTecnicos.filter((_, i) => i !== index) }));
   const handleRTChange = (index, field, value) => {
@@ -413,7 +251,6 @@ export default function App() {
     });
   };
 
-  // --- Multiplos Pavimentos Handlers ---
   const handlePavimentoCount = (tipo, nameVal, value) => {
     const num = parseInt(value, 10) || 0;
     setIdentificacao(prev => {
@@ -434,7 +271,6 @@ export default function App() {
 
   const handleTerreoData = (field, value) => setIdentificacao(prev => ({ ...prev, terreo: { ...prev.terreo, [field]: value } }));
 
-  // --- Fluxos, Materiais & Ambientes Handlers ---
   const handleFluxoTextChange = (categoria, campo, valor) => setFluxos(prev => ({ ...prev, [categoria]: { ...prev[categoria], [campo]: valor } }));
   const handleImageUpload = (categoria, floor, event) => {
     const file = event.target.files[0];
@@ -457,7 +293,6 @@ export default function App() {
   const handleMateriaisExtra = (e) => setMateriais({ ...materiais, [e.target.name]: e.target.value });
   const handleRdcToggle = (id) => setInstalacoes(prev => ({ ...prev, servicosRdc: prev.servicosRdc.includes(id) ? prev.servicosRdc.filter(item => item !== id) : [...prev.servicosRdc, id] }));
 
-  // --- Integração Revit ---
   const normalizeString = (str) => str ? str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().trim() : "";
   const handleRevitImport = (e) => {
     const file = e.target.files[0];
@@ -496,7 +331,7 @@ export default function App() {
         novosAmbientes.push({
           id: Date.now().toString() + i, tipoId: matchedTemplate.tipoId, nomePersonalizado: roomNameRaw,
           definicao: matchedTemplate.definicao, atividades: matchedTemplate.atividades, equipamentos: matchedTemplate.equipamentos,
-          mobiliarios: matchedTemplate.mobiliarios, movelarias: matchedTemplate.movelarias, acessorios: matchedTemplate.acessorios, infraestrutura: matchedTemplate.infraestrutura,
+          mobiliarios: matchedTemplate.mobiliarios, movelarias: matchedTemplate.movelarias, acessorios: matchedTemplate.acessorios, marmoraria: matchedTemplate.marmoraria, infraestrutura: matchedTemplate.infraestrutura,
           area: areaRaw, acabamentos: { 
             piso: colMap.piso !== -1 && row[colMap.piso] ? row[colMap.piso] : '', rodape: colMap.rodape !== -1 && row[colMap.rodape] ? row[colMap.rodape] : '', 
             parede: colMap.parede !== -1 && row[colMap.parede] ? row[colMap.parede] : '', teto: colMap.teto !== -1 && row[colMap.teto] ? row[colMap.teto] : '', 
@@ -516,7 +351,7 @@ export default function App() {
     if (!template) return;
     const novoId = Date.now().toString();
     setAmbientesProjeto([...ambientesProjeto, {
-      id: novoId, tipoId: template.tipoId, nomePersonalizado: template.nomeTemplate, definicao: template.definicao, atividades: template.atividades, equipamentos: template.equipamentos, mobiliarios: template.mobiliarios, movelarias: template.movelarias, acessorios: template.acessorios, infraestrutura: template.infraestrutura, area: '',
+      id: novoId, tipoId: template.tipoId, nomePersonalizado: template.nomeTemplate, definicao: template.definicao, atividades: template.atividades, equipamentos: template.equipamentos, mobiliarios: template.mobiliarios, movelarias: template.movelarias, acessorios: template.acessorios, marmoraria: template.marmoraria, infraestrutura: template.infraestrutura, area: '',
       acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
     }]);
     setExpandedRoomId(novoId);
@@ -533,7 +368,6 @@ export default function App() {
     }));
   };
 
-  // --- Cálculos ---
   const p = (v) => parseFloat(v.toString().replace(/\./g, '').replace(',', '.')) || 0;
   
   const calcularPavimentos = () => {
@@ -581,7 +415,6 @@ export default function App() {
     return DICIONARIO_TEXTOS[itemNome] || itemNome;
   };
 
-  // ================= SALVAR E IMPORTAR DADOS (BACKUP) =================
   const handleSaveData = () => {
     const dataToSave = { identificacao, atendimento, fluxos, materiais, ambientesProjeto, instalacoes, isEngenheiroManual, isCnaeManual };
     const blob = new Blob([JSON.stringify(dataToSave, null, 2)], { type: "application/json" });
@@ -598,8 +431,6 @@ export default function App() {
     reader.onload = (e) => {
       try {
         const loadedData = JSON.parse(e.target.result);
-        
-        // Trata conversão de layout antigo (versões anteriores de Backup) para o layout Multi-Pavimento novo
         if (loadedData.identificacao) {
           const idData = loadedData.identificacao;
           if (idData.areaSubsolo !== undefined && !idData.subsolos) idData.subsolos = [{ area: idData.areaSubsolo, ambientes: idData.ambientesSubsolo }];
@@ -608,11 +439,10 @@ export default function App() {
           if (idData.respTecnicoUnidade !== undefined && !idData.respTecnicos) idData.respTecnicos = [{ nome: idData.respTecnicoUnidade, conselho: idData.conselhoRespTecnico }];
           setIdentificacao(idData);
         }
-        
         if (loadedData.atendimento) setAtendimento(loadedData.atendimento);
         if (loadedData.fluxos) setFluxos(loadedData.fluxos);
         if (loadedData.materiais) setMateriais(loadedData.materiais);
-        if (loadedData.ambientesProjeto) setAmbientesProjeto(loadedData.ambientesProjeto);
+        if (loadedData.ambientesProjeto) setAmbientesProjeto(loadedData.ambientesProjeto.map(a => ({ marmoraria: a.marmoraria || 'Não se aplica', ...a })));
         if (loadedData.instalacoes) setInstalacoes(loadedData.instalacoes);
         if (loadedData.isEngenheiroManual !== undefined) setIsEngenheiroManual(loadedData.isEngenheiroManual);
         if (loadedData.isCnaeManual !== undefined) setIsCnaeManual(loadedData.isCnaeManual);
@@ -623,8 +453,28 @@ export default function App() {
     event.target.value = null; 
   };
 
-  // --- Gerador do Documento Word ---
-  const gerarDocumentoWord = () => {
+  const gerarDocumentoWord = (tipoRelatorio) => {
+    if (tipoRelatorio === 'todos') {
+      gerarDocumentoWord('descritivo');
+      setTimeout(() => gerarDocumentoWord('organizacao'), 1000);
+      setTimeout(() => gerarDocumentoWord('tecnico'), 2000);
+      return;
+    }
+
+    const config = {
+      descritivo: { title: 'MEMORIAL DESCRITIVO DE ARQUITETURA', fileName: 'Memorial_Descritivo' },
+      organizacao: { title: 'MEMORIAL DE ORGANIZAÇÃO FÍSICA', fileName: 'Memorial_Org_Fisica' },
+      tecnico: { title: 'RELATÓRIO TÉCNICO (PBA)', fileName: 'Relatorio_Tecnico_PBA' }
+    };
+
+    const { title: docTitle, fileName: fileNameStr } = config[tipoRelatorio];
+    const isDescritivo = tipoRelatorio === 'descritivo';
+    
+    const secAmb = isDescritivo ? 10 : 9;
+    const secSrv = isDescritivo ? 11 : 10;
+    const secInst = isDescritivo ? 12 : 11;
+    const secRef = isDescritivo ? 13 : 12;
+
     const meses = ['JANEIRO', 'FEVEREIRO', 'MARÇO', 'ABRIL', 'MAIO', 'JUNHO', 'JULHO', 'AGOSTO', 'SETEMBRO', 'OUTUBRO', 'NOVEMBRO', 'DEZEMBRO'];
     const hoje = new Date();
     
@@ -665,7 +515,7 @@ export default function App() {
     if (materiais.selecoes.esquadrias.length > 0) materiaisArr.push({ title: 'ESQUADRIAS', text: materiais.selecoes.esquadrias.map(i => traduzirMaterial(i, 'esquadrias')).join(' ') });
     materiaisArr.push({ title: 'FERRAGENS E VIDROS', text: 'Ferragens da marca La Fonte, Papaiz ou similar, acabamento superior cromado ou pintura branca. Vidros lisos, transparentes, temperados (8 ou 10mm) com película de segurança.' });
     materiaisArr.push({ title: 'LOUÇAS E METAIS', text: 'Padrões normativos Deca (Linhas Vogue Plus, Izy, Decamatic ECO), Tramontina (Cubas inox), Tigre (Ralos sifonados titânio) e Viqua (Duchas Marujá).' });
-    if (materiais.marmorariaCor.trim() !== '') materiaisArr.push({ title: 'MARMORARIA', text: `As bancadas dos Sanitários, Sala de Classificação, Copa e Café são executadas em granito de cor: ${materiais.marmorariaCor}.` });
+    if (materiais.marmorariaCor.trim() !== '') materiaisArr.push({ title: 'MARMORARIA', text: `As bancadas dos Sanitários, Sala de Classificação, Área para desjejum são executadas em granito de cor: ${materiais.marmorariaCor}.` });
     materiaisArr.push({ title: 'REFRIGERAÇÃO E EXAUSTÃO', text: 'Aparelhos de Ar-Condicionado tipo Split (Hi-Wall, Cassete ou Piso-teto) sistema Inverter. Nos ambientes sem ventilação natural, haverá exaustores mecânicos (ventiladores axiais Multivac), atendendo à RDC 50, Resolução RE nº 09 e NBR 7256/2021.' });
 
     const htmlMateriais = materiaisArr.map((m, idx) => `
@@ -701,11 +551,64 @@ export default function App() {
       return html;
     };
 
+    const htmlAmbientes = ambientesProjeto.length > 0 ? ambientesProjeto.map((amb, i) => {
+      const folhaStr = amb.acabamentos.portaFolhas == 1 ? '1 folha' : `${amb.acabamentos.portaFolhas} folhas`;
+      let descPorta = '';
+      if(amb.acabamentos.porta && amb.acabamentos.porta !== 'Sem porta (Vão livre)' && amb.acabamentos.porta !== 'Não se aplica') {
+         descPorta = `${amb.acabamentos.porta} com ${folhaStr} de ${amb.acabamentos.portaLargura || 'XX'} cm cada. Vão livre de ${amb.acabamentos.portaVao || 'XX'} cm.`;
+      } else if (amb.acabamentos.porta === 'Sem porta (Vão livre)') {
+         descPorta = `Sem porta (Vão livre).`;
+      } else {
+         descPorta = 'Não se aplica';
+      }
+
+      let subIdx = 1;
+      let roomHTML = "<div class=\"avoid-break\" style=\"margin-bottom: 20px;\">";
+      roomHTML += "<h3 class=\"left-align\" style=\"color:#000; text-transform: uppercase;\">" + secAmb + "." + (i+1) + ". " + amb.nomePersonalizado.toUpperCase() + "</h3>";
+
+      const addLine = (label, value) => {
+        if(value && value !== 'Não se aplica' && value !== '') {
+           const lines = value.toString().split('\n').filter(l => l.trim() !== '');
+           let formattedValue = value;
+           if (lines.length > 1) {
+              formattedValue = '<br>' + lines.map(l => '&bull; ' + l.trim()).join('<br>');
+           }
+           roomHTML += "<p><b>" + secAmb + "." + (i+1) + "." + subIdx + ". " + label + ":</b> " + formattedValue + "</p>";
+           subIdx++;
+        }
+      };
+
+      if (tipoRelatorio === 'organizacao' || tipoRelatorio === 'tecnico') {
+        addLine('Definição', amb.definicao);
+        addLine('Atividades relacionadas', amb.atividades);
+        addLine('Equipamentos', amb.equipamentos);
+        addLine('Mobiliários', amb.mobiliarios);
+        addLine('Movelarias', amb.movelarias);
+        addLine('Acessórios', amb.acessorios);
+        addLine('Marmoraria', amb.marmoraria);
+        addLine('Infraestrutura', amb.infraestrutura);
+      }
+
+      addLine('Área', amb.area ? `${amb.area} m²` : 'A definir');
+
+      if (tipoRelatorio === 'descritivo' || tipoRelatorio === 'tecnico') {
+        addLine('Piso', traduzirMaterial(amb.acabamentos.piso, 'pisos'));
+        addLine('Rodapé', traduzirMaterial(amb.acabamentos.rodape, 'rodapes'));
+        addLine('Paredes', traduzirMaterial(amb.acabamentos.parede, 'acabamentosInt'));
+        addLine('Teto', traduzirMaterial(amb.acabamentos.teto, 'forros'));
+        addLine('Porta', descPorta);
+      }
+
+      roomHTML += "</div>";
+      return roomHTML;
+      
+    }).join('') : '<p><i>Nenhum ambiente adicionado ao projeto.</i></p>';
+
     const htmlContent = `
       <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
       <head>
         <meta charset='utf-8'>
-        <title>Memorial Descritivo</title>
+        <title>${docTitle}</title>
         <style>
           body { font-family: 'Calibri', sans-serif; font-size: 11pt; line-height: 1.5; color: #000; text-align: justify; }
           h1, h2, h3 { page-break-after: avoid; }
@@ -728,11 +631,17 @@ export default function App() {
           <tr>
             <td valign="top" align="right">
               <div style="font-size: 12pt; margin-bottom: 100px;">${dataCapa}</div>
-              <div style="text-align: center; margin-bottom: 100px;">
-                 <img src="${LOGO_SABIN_HEADER}" width="300" alt="Logotipo Sabin" />
-              </div>
+              
+              <table align="center" width="400" style="width: 10cm; margin: 0 auto 100px auto; border-collapse: collapse; border: none;">
+                <tr>
+                  <td align="center" style="border: none; padding: 0;">
+                    <img src="${identificacao.imagemCapa || LOGO_SABIN_HEADER}" width="400" style="width: 100%; max-width: 10cm; height: auto;" alt="Logotipo / Capa" />
+                  </td>
+                </tr>
+              </table>
+
               <div style="margin-bottom: 80px;">
-                <p style="font-size: 26pt; font-weight: bold; color: #000; margin: 0; padding: 0;">RELATÓRIO TÉCNICO</p>
+                <p style="font-size: 26pt; font-weight: bold; color: #000; margin: 0; padding: 0;">${docTitle}</p>
                 <p style="font-size: 14pt; font-weight: bold; color: #cc0000; margin: 5px 0 0 0; padding: 0;">${nomeUnidadeCapa}</p>
               </div>
             </td>
@@ -740,7 +649,7 @@ export default function App() {
           <tr>
             <td valign="bottom" align="right">
               <p style="font-size: 11pt; margin: 0; text-transform: uppercase;">${identificacao.respProjeto || '[Nome do Engenheiro(a)]'}</p>
-              <p style="font-size: 8pt; margin: 0 0 15px 0;">CREA: ${identificacao.creaCauProjeto || '[000000/D-UF]'}</p>
+              <p style="font-size: 8pt; margin: 0 0 15px 0;">CREA/CAU: ${identificacao.creaCauProjeto || '[000000/D-UF]'}</p>
               
               ${identificacao.respTecnicos.map(rt => `
                 <p style="font-size: 11pt; margin: 0; text-transform: uppercase;">${rt.nome || '[Nome do Resp. Técnico]'}</p>
@@ -763,17 +672,17 @@ export default function App() {
         <p class="toc">6. RELAÇÃO DE CONTRATOS E CONVÊNIOS</p>
         <p class="toc">7. RELAÇÃO DE PRODUTOS E SERVIÇOS TERCEIRIZADOS</p>
         <p class="toc">8. FLUXO DE PRODUÇÃO E PESSOAL</p>
-        <p class="toc">9. MATERIAIS E SERVIÇOS</p>
-        <p class="toc">10. ESPECIFICAÇÃO DOS AMBIENTES</p>
-        <p class="toc">11. RELAÇÃO DE SERVIÇOS REALIZADOS NO ESTABELECIMENTO</p>
-        <p class="toc">12. DESCRIÇÃO SUCINTA DA SOLUÇÃO ADOTADA PARA AS INSTALAÇÕES</p>
-        <p class="toc">13. REFERÊNCIAS</p>
+        ${isDescritivo || tipoRelatorio === 'tecnico' ? '<p class="toc">9. MATERIAIS E SERVIÇOS</p>' : ''}
+        <p class="toc">${secAmb}. ESPECIFICAÇÃO DOS AMBIENTES</p>
+        <p class="toc">${secSrv}. RELAÇÃO DE SERVIÇOS REALIZADOS NO ESTABELECIMENTO</p>
+        <p class="toc">${secInst}. DESCRIÇÃO SUCINTA DA SOLUÇÃO ADOTADA PARA AS INSTALAÇÕES</p>
+        <p class="toc">${secRef}. REFERÊNCIAS</p>
 
         <br clear=all style='mso-special-character:line-break;page-break-before:always'>
 
         <div class="keep-with-next">
           <h2>1. OBJETIVO</h2>
-          <p>Este Relatório Técnico tem como finalidade apresentar os ambientes, assim como seus mobiliários, equipamentos, acessórios, a especificação dos materiais construtivos, acabamentos, acessórios e outros componentes, sendo todos eles partes envolvidas no empreendimento da unidade de <b>${textoServicosObjetivo}</b> do <b>${identificacao.nomeFantasia || '[Nome Fantasia]'}</b>.</p>
+          <p>Este documento tem como finalidade apresentar os ambientes, assim como seus mobiliários, equipamentos, acessórios, a especificação dos materiais construtivos, acabamentos, acessórios e outros componentes, sendo todos eles partes envolvidas no empreendimento da unidade de <b>${textoServicosObjetivo}</b> do <b>${identificacao.nomeFantasia || '[Nome Fantasia]'}</b>.</p>
         </div>
         <p>É um complemento para a avaliação do projeto de edificações e emissão do <b>${identificacao.tipoProjeto}</b>, considerando a necessidade de organizar o processo de análise e aprovação de projetos de Estabelecimentos Assistenciais de Saúde e de Interesse à Saúde.</p>
 
@@ -839,8 +748,8 @@ export default function App() {
           <p>Ao entrar no posto de coleta, o cliente retira uma senha e aguarda na recepção. O equipamento de televisão instalado em local visível à todas as cadeiras da espera, mostrará a senha e o correspondente guichê para atendimento. Durante o processo de admissão do cliente, o funcionário Sabin colhe informações pessoais, o pedido médico e identifica os exames que serão realizados.</p>
         </div>
         <p>Após conclusão do atendimento inicial, o cliente é direcionado à sala onde serão colhidas as amostras biológicas – o tipo de sala de coleta varia de acordo com o exame a ser realizado. No caso de coletas de urina, fezes e secreções, o cliente recebe do atendente o frasco estéril e as orientações de coleta para realizá-las em casa.</p>
-        <p>Após serem concluídas as coletas no posto, o cliente é direcionado ao Café, onde é oferecido o desjejum opcional. São disponibilizadas refeições rápidas como: sucos, biscoitos, pães de queijo, frutas, café, chocolate quente, água potável, entre outros.</p>
-        <p>Os ambientes Sanitário, Sanitário P.C.D., Recepção e Café são de livre circulação para os pacientes e acompanhantes. O acesso e permanência do cliente nas salas de coleta deve acontecer sempre acompanhado por um funcionário do laboratório. Os demais ambientes possuem acesso restrito aos funcionários do Laboratório Sabin;</p>
+        <p>Após serem concluídas as coletas no posto, o cliente é direcionado à Área para desjejum, onde é oferecido o desjejum opcional. São disponibilizadas refeições rápidas como: sucos, biscoitos, pães de queijo, frutas, café, chocolate quente, água potável, entre outros.</p>
+        <p>Os ambientes Sanitário, Sanitário P.C.D., Recepção e Área para desjejum são de livre circulação para os pacientes e acompanhantes. O acesso e permanência do cliente nas salas de coleta deve acontecer sempre acompanhado por um funcionário do laboratório. Os demais ambientes possuem acesso restrito aos funcionários do Laboratório Sabin;</p>
 
         <div class="keep-with-next">
           <h3 class="left-align" style="color: #000;">5.7. TRANSPORTE DE AMOSTRAS BIOLÓGICAS:</h3>
@@ -860,7 +769,7 @@ export default function App() {
         <table align="center" width="500" style="width: 14cm; margin: 20px auto; border-collapse: collapse; border: none;">
           <tr>
             <td align="center" style="border: none; padding: 0;">
-              <img src="${IMAGEM_EMBALAGENS_FIXA}" width="500" style="width: 100%; max-width: 14cm; height: auto;" alt="Embalagens e recipientes de transporte" />
+              <img src="${atendimento.imagemEmbalagens || IMAGEM_EMBALAGENS_FIXA}" width="500" style="width: 100%; max-width: 14cm; height: auto;" alt="Embalagens e recipientes de transporte" />
             </td>
           </tr>
           <tr>
@@ -930,47 +839,13 @@ export default function App() {
         ${buildFluxoHtml('amostras', '8.3. FLUXO DE AMOSTRAS')}
         ${buildFluxoHtml('residuos', '8.4. FLUXO DE RESÍDUOS')}
 
-        <h2>9. MATERIAIS E SERVIÇOS</h2>
-        ${htmlMateriais}
+        ${isDescritivo || tipoRelatorio === 'tecnico' ? `<h2>9. MATERIAIS E SERVIÇOS</h2>\n${htmlMateriais}` : ''}
 
-        <h2>10. ESPECIFICAÇÃO DOS AMBIENTES</h2>
-        ${ambientesProjeto.length > 0 ? ambientesProjeto.map((amb, i) => {
-          
-          const folhaStr = amb.acabamentos.portaFolhas == 1 ? '1 folha' : `${amb.acabamentos.portaFolhas} folhas`;
-          let descPorta = '';
-          if(amb.acabamentos.porta && amb.acabamentos.porta !== 'Sem porta (Vão livre)' && amb.acabamentos.porta !== 'Não se aplica') {
-             descPorta = `<p><b>Porta:</b> ${amb.acabamentos.porta} com ${folhaStr} de ${amb.acabamentos.portaLargura || 'XX'} cm cada. Vão livre de ${amb.acabamentos.portaVao || 'XX'} cm.</p>`;
-          } else if (amb.acabamentos.porta === 'Sem porta (Vão livre)') {
-             descPorta = `<p><b>Porta:</b> Sem porta (Vão livre).</p>`;
-          }
-
-          const pisoTxt = amb.acabamentos.piso && amb.acabamentos.piso !== 'Não se aplica' ? `<p><b>Piso:</b> ${traduzirMaterial(amb.acabamentos.piso, 'pisos')}</p>` : '';
-          const rodapeTxt = amb.acabamentos.rodape && amb.acabamentos.rodape !== 'Não se aplica' ? `<p><b>Rodapé:</b> ${traduzirMaterial(amb.acabamentos.rodape, 'rodapes')}</p>` : '';
-          const paredeTxt = amb.acabamentos.parede && amb.acabamentos.parede !== 'Não se aplica' ? `<p><b>Paredes:</b> ${traduzirMaterial(amb.acabamentos.parede, 'acabamentosInt')}</p>` : '';
-          const tetoTxt = amb.acabamentos.teto && amb.acabamentos.teto !== 'Não se aplica' ? `<p><b>Teto:</b> ${traduzirMaterial(amb.acabamentos.teto, 'forros')}</p>` : '';
-
-          return `
-          <div class="avoid-break" style="margin-bottom: 20px;">
-            <h3 class="left-align" style="color:#000;">10.${i+1}. ${amb.nomePersonalizado.toUpperCase()}</h3>
-            <p><b>Definição:</b> ${amb.definicao}</p>
-            <p><b>Atividades relacionadas:</b> ${amb.atividades}</p>
-            ${amb.equipamentos && amb.equipamentos !== 'Não se aplica' ? `<p><b>Equipamentos:</b> ${amb.equipamentos}</p>` : ''}
-            ${amb.mobiliarios && amb.mobiliarios !== 'Não se aplica' ? `<p><b>Mobiliários:</b> ${amb.mobiliarios}</p>` : ''}
-            ${amb.movelarias && amb.movelarias !== 'Não se aplica' ? `<p><b>Movelarias:</b> ${amb.movelarias}</p>` : ''}
-            ${amb.acessorios && amb.acessorios !== 'Não se aplica' ? `<p><b>Acessórios:</b> ${amb.acessorios}</p>` : ''}
-            ${amb.infraestrutura && amb.infraestrutura !== 'Não se aplica' ? `<p><b>Infraestrutura:</b> ${amb.infraestrutura}</p>` : ''}
-            <p><b>Área:</b> ${amb.area ? amb.area + ' m²' : '[Não informada]'}</p>
-            ${pisoTxt}
-            ${rodapeTxt}
-            ${paredeTxt}
-            ${tetoTxt}
-            ${descPorta}
-          </div>
-          `
-        }).join('') : '<p><i>Nenhum ambiente adicionado ao projeto.</i></p>'}
+        <h2>${secAmb}. ESPECIFICAÇÃO DOS AMBIENTES</h2>
+        ${htmlAmbientes}
 
         <div class="keep-with-next">
-          <h2>11. RELAÇÃO DE SERVIÇOS REALIZADOS NO ESTABELECIMENTO</h2>
+          <h2>${secSrv}. RELAÇÃO DE SERVIÇOS REALIZADOS NO ESTABELECIMENTO</h2>
           <p>Serão apresentadas a seguir as listagens das atividades e subatividades do EAS – Estabelecimento Assistencial de Saúde de acordo com as respectivas atribuições constantes na RDC Nº 50, de 21 fevereiro de 2002.</p>
         </div>
         <p>Evidentemente que estão listadas apenas as atividades e subatividades próprias e pertinentes à operação do estabelecimento ${identificacao.nomeFantasia || '[Nome Fantasia]'} – ${identificacao.nomeUnidade || '[Unidade]'}.</p>
@@ -988,15 +863,15 @@ export default function App() {
           `).join('')}
         </div>
 
-        <h2>12. DESCRIÇÃO SUCINTA DA SOLUÇÃO ADOTADA PARA AS INSTALAÇÕES</h2>
+        <h2>${secInst}. DESCRIÇÃO SUCINTA DA SOLUÇÃO ADOTADA PARA AS INSTALAÇÕES</h2>
         
         <div class="keep-with-next">
-          <h3 class="left-align" style="color: #000;">12.1. ABASTECIMENTO DE ÁGUA POTÁVEL</h3>
+          <h3 class="left-align" style="color: #000;">${secInst}.1. ABASTECIMENTO DE ÁGUA POTÁVEL</h3>
           <p>O estabelecimento é abastecido de água tratada pela ${instalacoes.concessionariaAgua}, que realiza o tratamento e distribuição de água na região.</p>
         </div>
 
         <div class="keep-with-next">
-          <h3 class="left-align" style="color: #000;">12.2. ENERGIA ELÉTRICA</h3>
+          <h3 class="left-align" style="color: #000;">${secInst}.2. ENERGIA ELÉTRICA</h3>
           <p>O abastecimento de energia elétrica é provido pela ${instalacoes.concessionariaEnergia}. A unidade possui uma instalação elétrica independente, constituída por diversos elementos:</p>
         </div>
         <ul style="margin-left: 20px;">
@@ -1009,27 +884,27 @@ export default function App() {
         Esse dispositivo diferencial DR tem ainda a função de segurança de todos os circuitos elétricos contra as correntes de fuga provocadas por equipamentos eletroeletrônicos. Os disjuntores são acionados pela simples movimentação de suas alavancas, em caso de sobrecarga momentânea, o disjuntor do circuito atingido se desligará automaticamente.</p>
 
         <div class="keep-with-next">
-          <h3 class="left-align" style="color: #000;">12.3. ILUMINAÇÃO DE EMERGÊNCIA</h3>
-          <p>O empreendimento contempla a iluminação de emergência, através de um circuito de 16A, dedicado, no quadro de distribuição, de acordo com a ABNT 10.898/2013 - Sistema de Iluminação de Emergência e NPT – Norma de Procedimento Técnico 018 -11.</p>
+          <h3 class="left-align" style="color: #000;">${secInst}.3. ILUMINAÇÃO DE EMERGÊNCIA</h3>
+          <p>O empreendimento contempla a iluminação de emergência, através de um circuito de 16A, dedicado, no quadro de distribuição, de acordo com a ABNT 10.898/2013 - Sistema de Iluminação de Emergency e NPT – Norma de Procedimento Técnico 018 -11.</p>
         </div>
 
         <div class="keep-with-next">
-          <h3 class="left-align" style="color: #000;">12.4. COLETA E DESTINAÇÃO DE ESGOTO</h3>
+          <h3 class="left-align" style="color: #000;">${secInst}.4. COLETA E DESTINAÇÃO DE ESGOTO</h3>
           <p>A ${instalacoes.concessionariaAgua} realiza, respectivamente, a coleta e tratamento de esgoto sanitário de forma rápida e segura.<br>A empresa realiza o tratamento e destinação adequados dos resíduos líquidos, com índice de ${instalacoes.indiceEsgoto}% de coleta e tratamento de esgoto.</p>
         </div>
 
         <div class="keep-with-next">
-          <h3 class="left-align" style="color: #000;">12.5. RESÍDUOS SÓLIDOS</h3>
+          <h3 class="left-align" style="color: #000;">${secInst}.5. RESÍDUOS SÓLIDOS</h3>
           <p>Os resíduos sólidos do estabelecimento são coletados pela ${instalacoes.coletaResiduos}, que realiza a gestão de resíduos sólidos urbanos através dos serviços de coleta domiciliar, destinação final dos resíduos sólidos urbanos e programa de coleta seletiva.</p>
         </div>
 
         <div class="keep-with-next">
-          <h3 class="left-align" style="color: #000;">12.6. ÁGUAS PLUVIAIS</h3>
+          <h3 class="left-align" style="color: #000;">${secInst}.6. ÁGUAS PLUVIAIS</h3>
           <p>A água da chuva é coletada por dispositivos de captação instalados no edifício. Logo em seguida, a centralização é direcionada para rede pública de águas pluviais. Não há utilização de águas pluviais para reuso.</p>
         </div>
 
         <div class="keep-with-next">
-          <h2>13. REFERÊNCIAS</h2>
+          <h2>${secRef}. REFERÊNCIAS</h2>
           <p class="left-align">
             Resolução nº 0389/2006 – Publicada no DOE – 7148, de 16/06/06<br>
             RDC Nº 50, de 21 de fevereiro de 2002<br>
@@ -1045,7 +920,7 @@ export default function App() {
           <div class="linha-assinatura">______________________________________________</div>
           <b>${identificacao.respProjeto || '[Nome do Engenheiro(a)]'}</b><br>
           Engenheiro(a) Responsável Pelo Projeto<br>
-          CREA: ${identificacao.creaCauProjeto || '[XXXXX/D-UF]'}<br>
+          CREA/CAU: ${identificacao.creaCauProjeto || '[XXXXX/D-UF]'}<br>
           
           ${identificacao.respTecnicos.map(rt => `
             <br><br><br><br><br><br><br>
@@ -1072,7 +947,7 @@ export default function App() {
     const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = `Memorial_${identificacao.nomeFantasia || 'Sabin'}.doc`;
+    link.download = `${fileNameStr}_${identificacao.nomeFantasia ? identificacao.nomeFantasia.replace(/\s+/g, '_').toLowerCase() : 'Sabin'}.doc`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1139,9 +1014,29 @@ export default function App() {
               <button onClick={handleSaveData} className="flex justify-center items-center gap-2 bg-white hover:bg-red-50 text-red-600 border border-red-200 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
                 <Save size={16} /> Salvar
               </button>
-              <button onClick={gerarDocumentoWord} className="flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
-                <FileSignature size={16} /> Gerar relatório
-              </button>
+              
+              <div className="relative">
+                <button onClick={() => setExportDropdownOpen(!exportDropdownOpen)} className="flex justify-center items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
+                  <FileSignature size={16} /> Gerar relatórios <ChevronDown size={14} />
+                </button>
+                
+                {exportDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-xl z-50 overflow-hidden">
+                    <button onClick={() => { gerarDocumentoWord('descritivo'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
+                      <Hammer size={14} className="text-red-600"/> Memorial Descritivo
+                    </button>
+                    <button onClick={() => { gerarDocumentoWord('organizacao'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
+                      <Users size={14} className="text-red-600"/> Org. Física
+                    </button>
+                    <button onClick={() => { gerarDocumentoWord('tecnico'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
+                      <FileText size={14} className="text-red-600"/> Relatório Técnico (PBA)
+                    </button>
+                    <button onClick={() => { gerarDocumentoWord('todos'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm font-bold text-red-700 hover:bg-red-50 flex items-center gap-2">
+                      <Download size={14} /> Gerar Todos os 3
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           
@@ -1157,6 +1052,27 @@ export default function App() {
 
         {/* ================= FASE 1: IDENTIFICAÇÃO ================= */}
         <div className={activeTab === 'identificacao' ? "space-y-6 animate-in fade-in" : "hidden"}>
+
+          {/* NOVO UPLOAD PARA IMAGEM DA CAPA */}
+          <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm mb-6">
+            <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-2"><ImageIcon size={18}/> Imagem da Capa (Logomarca / Fachada)</h3>
+            <p className="text-xs text-blue-800 mb-4"><strong>Nota:</strong> Esta é uma solução temporária para inclusão da logomarca ou imagem da fachada na capa do documento gerado.</p>
+            {!identificacao.imagemCapa ? (
+              <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-white hover:bg-blue-50 transition-colors">
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <UploadCloud className="w-8 h-8 mb-2 text-blue-500" />
+                  <p className="text-sm text-gray-600"><span className="font-semibold text-blue-600">Clique para anexar</span> imagem da capa</p>
+                </div>
+                <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={(e) => handleBase64Upload(setIdentificacao, 'imagemCapa', e)} />
+              </label>
+            ) : (
+              <div className="relative w-full rounded-lg border border-gray-200 overflow-hidden bg-white p-2 flex items-center justify-center h-40">
+                <img src={identificacao.imagemCapa} alt="Capa" className="max-h-full max-w-full object-contain rounded" />
+                <button onClick={() => setIdentificacao(prev => ({...prev, imagemCapa: null}))} className="absolute top-2 right-2 p-1.5 bg-gray-800 text-white rounded-full hover:bg-gray-900 shadow-lg"><Trash2 size={14} /></button>
+              </div>
+            )}
+          </div>
+
           <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
             <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2"><Building2 size={20} className="text-red-600"/> 1. Identificação do Estabelecimento</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -1349,11 +1265,11 @@ export default function App() {
                   {ENGENHEIROS.map(eng => <option key={eng.nome} value={eng.nome}>{eng.nome}</option>)}
                 </select>
               </div>
-              {!isEngenheiroManual && <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CREA</label><input type="text" value={identificacao.creaCauProjeto} className="w-full border border-gray-300 bg-[#e5e7eb] rounded-md p-2 outline-none text-gray-900 font-medium cursor-not-allowed" readOnly /></div>}
+              {!isEngenheiroManual && <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CREA / CAU</label><input type="text" value={identificacao.creaCauProjeto} className="w-full border border-gray-300 bg-[#e5e7eb] rounded-md p-2 outline-none text-gray-900 font-medium cursor-not-allowed" readOnly /></div>}
               {isEngenheiroManual && (
                 <>
                   <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome do Responsável (Outro)</label><input type="text" name="respProjeto" value={identificacao.respProjeto} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
-                  <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CREA</label><input type="text" name="creaCauProjeto" value={identificacao.creaCauProjeto} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
+                  <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CREA / CAU</label><input type="text" name="creaCauProjeto" value={identificacao.creaCauProjeto} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
                 </>
               )}
             </div>
@@ -1410,6 +1326,25 @@ export default function App() {
                   <div><label className="block text-xs text-gray-500 mb-1">Sábados</label><textarea name="horarioSabado" value={atendimento.horarioSabado} onChange={handleAtendimentoChange} rows={2} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none text-sm resize-none" /></div>
                 </div>
               </div>
+            </div>
+
+            {/* NOVO UPLOAD PARA IMAGEM DA CAIXA DE TRANSPORTE */}
+            <div className="border-t border-gray-200 mt-6 pt-6 mb-8">
+              <h3 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2"><ImageIcon size={16}/> Imagem da Caixa de Transporte (Embalagens)</h3>
+              {!atendimento.imagemEmbalagens ? (
+                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-red-200 rounded-lg cursor-pointer bg-red-50/30 hover:bg-red-50 transition-colors">
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <UploadCloud className="w-8 h-8 mb-2 text-red-400" />
+                    <p className="text-sm text-gray-600"><span className="font-semibold text-red-600">Clique para anexar</span> imagem das embalagens</p>
+                  </div>
+                  <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={(e) => handleBase64Upload(setAtendimento, 'imagemEmbalagens', e)} />
+                </label>
+              ) : (
+                <div className="relative w-full rounded-lg border border-gray-200 overflow-hidden bg-gray-50 p-2 flex items-center justify-center h-40">
+                  <img src={atendimento.imagemEmbalagens} alt="Embalagens" className="max-h-full max-w-full object-contain rounded" />
+                  <button onClick={() => setAtendimento(prev => ({...prev, imagemEmbalagens: null}))} className="absolute top-2 right-2 p-1.5 bg-gray-800 text-white rounded-full hover:bg-gray-900 shadow-lg"><Trash2 size={14} /></button>
+                </div>
+              )}
             </div>
 
             <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2 mt-8"><Trash2 size={20} className="text-red-600"/> Resíduos Sólidos (Bombonas)</h2>
@@ -1535,7 +1470,7 @@ export default function App() {
           
           <div className="bg-white p-6 border border-gray-200 rounded-xl shadow-sm mb-6 flex justify-between items-center">
             <div>
-              <h3 className="font-semibold text-gray-800 flex items-center gap-2"><Upload size={18} className="text-red-600"/> Integração BIM (Revit)</h3>
+              <h3 className="font-semibold text-gray-800 flex items-center gap-2"><UploadCloud size={18} className="text-red-600"/> Integração BIM (Revit)</h3>
               <p className="text-sm text-gray-500 mt-1">Importe uma "Tabela de Ambientes" (Room Schedule) em formato .csv ou .txt exportada do Revit.</p>
             </div>
             <div className="flex gap-3 items-center">
@@ -1589,7 +1524,7 @@ export default function App() {
 
             {ambientesProjeto.map((amb, index) => {
               const isExpanded = expandedRoomId === amb.id;
-              const hasDoor = amb.acabamentos.porta && amb.acabamentos.porta !== '' && amb.acabamentos.porta !== 'Sem porta (Vão livre)';
+              const hasDoor = amb.acabamentos.porta && amb.acabamentos.porta !== '' && amb.acabamentos.porta !== 'Sem porta (Vão livre)' && amb.acabamentos.porta !== 'Não se aplica';
 
               return (
                 <div key={amb.id} className={`bg-white rounded-xl shadow-sm border transition-all ${isExpanded ? 'border-red-400 ring-1 ring-red-100' : 'border-gray-200'}`}>
@@ -1615,13 +1550,14 @@ export default function App() {
                       {/* Textos Padrão Editáveis */}
                       <div className="mb-6 p-4 bg-white border border-gray-200 rounded-lg text-sm text-gray-700 grid grid-cols-1 gap-4">
                         <div className="flex items-center gap-2 mb-2 text-red-800 font-semibold"><Info size={16}/> Textos Padrão do Ambiente (Edite se necessário)</div>
-                        <div><label className="text-xs font-bold text-gray-500">Definição:</label><textarea value={amb.definicao} onChange={(e) => atualizarAmbiente(amb.id, 'definicao', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={3} /></div>
-                        <div><label className="text-xs font-bold text-gray-500">Atividades:</label><textarea value={amb.atividades} onChange={(e) => atualizarAmbiente(amb.id, 'atividades', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={3} /></div>
-                        <div><label className="text-xs font-bold text-gray-500">Equipamentos:</label><textarea value={amb.equipamentos} onChange={(e) => atualizarAmbiente(amb.id, 'equipamentos', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={3} /></div>
-                        <div><label className="text-xs font-bold text-gray-500">Mobiliários:</label><textarea value={amb.mobiliarios} onChange={(e) => atualizarAmbiente(amb.id, 'mobiliarios', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={3} /></div>
-                        <div><label className="text-xs font-bold text-gray-500">Movelarias:</label><textarea value={amb.movelarias} onChange={(e) => atualizarAmbiente(amb.id, 'movelarias', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={3} /></div>
-                        <div><label className="text-xs font-bold text-gray-500">Acessórios:</label><textarea value={amb.acessorios} onChange={(e) => atualizarAmbiente(amb.id, 'acessorios', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={3} /></div>
-                        <div><label className="text-xs font-bold text-gray-500">Infraestrutura:</label><textarea value={amb.infraestrutura} onChange={(e) => atualizarAmbiente(amb.id, 'infraestrutura', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={3} /></div>
+                        <div><label className="text-xs font-bold text-gray-500">Definição:</label><textarea value={amb.definicao} onChange={(e) => atualizarAmbiente(amb.id, 'definicao', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={2} /></div>
+                        <div><label className="text-xs font-bold text-gray-500">Atividades:</label><textarea value={amb.atividades} onChange={(e) => atualizarAmbiente(amb.id, 'atividades', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={2} /></div>
+                        <div><label className="text-xs font-bold text-gray-500">Equipamentos:</label><textarea value={amb.equipamentos} onChange={(e) => atualizarAmbiente(amb.id, 'equipamentos', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={2} /></div>
+                        <div><label className="text-xs font-bold text-gray-500">Mobiliários:</label><textarea value={amb.mobiliarios} onChange={(e) => atualizarAmbiente(amb.id, 'mobiliarios', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={2} /></div>
+                        <div><label className="text-xs font-bold text-gray-500">Movelarias:</label><textarea value={amb.movelarias} onChange={(e) => atualizarAmbiente(amb.id, 'movelarias', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={2} /></div>
+                        <div><label className="text-xs font-bold text-gray-500">Acessórios:</label><textarea value={amb.acessorios} onChange={(e) => atualizarAmbiente(amb.id, 'acessorios', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={2} /></div>
+                        <div><label className="text-xs font-bold text-gray-500">Marmoraria:</label><textarea value={amb.marmoraria || 'Não se aplica'} onChange={(e) => atualizarAmbiente(amb.id, 'marmoraria', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={2} /></div>
+                        <div><label className="text-xs font-bold text-gray-500">Infraestrutura:</label><textarea value={amb.infraestrutura} onChange={(e) => atualizarAmbiente(amb.id, 'infraestrutura', e.target.value)} className="w-full border border-gray-300 rounded p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 bg-[#f8fafc] text-gray-900 resize-y" rows={2} /></div>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -1728,8 +1664,8 @@ export default function App() {
                     <div className="mb-8 mt-4">
                       <div className="border-b border-gray-400 w-64 mx-auto mb-1"></div>
                       <p className="font-bold uppercase">{identificacao.respProjeto || '[Engenheiro(a)]'}</p>
-                      <p>Engenheiro(a) Responsável Pelo Projeto</p>
-                      <p>CREA: {identificacao.creaCauProjeto || '[000000]'}</p>
+                      <p>Engenheira/o Responsável Pelo Projeto</p>
+                      <p>CREA/CAU: {identificacao.creaCauProjeto || '[000000]'}</p>
                     </div>
                     {identificacao.respTecnicos.map((rt, i) => (
                       <div key={i} className="mb-8">
