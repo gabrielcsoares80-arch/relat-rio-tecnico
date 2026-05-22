@@ -1327,7 +1327,7 @@ export default function App() {
 
             {/* NOVO UPLOAD PARA IMAGEM DA CAIXA DE TRANSPORTE */}
             <div className="border-t border-gray-200 mt-6 pt-6 mb-8">
-              <h3 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2"><ImageIcon size={16}/> Imagem da Caixa de Transporte (Embalagens)</h3>
+              <h3 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2"><ImageIcon size={16}/> Imagem da Caixa de Transporte</h3>
               {!atendimento.imagemEmbalagens ? (
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-red-200 rounded-lg cursor-pointer bg-red-50/30 hover:bg-red-50 transition-colors">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -1344,17 +1344,17 @@ export default function App() {
               )}
             </div>
 
-            <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2 mt-8"><Trash2 size={20} className="text-red-600"/> Resíduos Sólidos (Bombonas)</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2 mt-8"><Trash2 size={20} className="text-red-600"/> 6. Resíduos Sólidos</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 bg-gray-50 p-5 rounded-lg border border-gray-200">
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Total de Bombonas</label><input type="number" name="qtdBombonasTotal" value={atendimento.qtdBombonasTotal} onChange={handleAtendimentoChange} className="w-full border border-gray-300 bg-white text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tipo de Bombona (PEAD)</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tipo de Bombona</label>
                 <select name="tipoBombona" value={atendimento.tipoBombona} onChange={handleAtendimentoChange} className="w-full border border-gray-300 bg-white text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none text-sm">
                   {BOMBONAS_OPCOES.map((b) => <option key={b.litros} value={b.litros}>{b.litros} Litros (Peso: {b.peso} | Dimensões: {b.dim})</option>)}
                 </select>
               </div>
               <div className="md:col-span-3 border-t border-gray-200 my-2 pt-4">
-                <span className="text-sm font-semibold text-gray-800 mb-3 block">Distribuição por Categoria (Quantidade de contentores):</span>
+                <span className="text-sm font-semibold text-gray-800 mb-3 block">Distribuição por Categoria:</span>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div className="flex flex-col"><label className="text-xs text-gray-500">Comuns (Grp D)</label><input type="number" name="qtdComum" value={atendimento.qtdComum} onChange={handleAtendimentoChange} className="border border-gray-300 bg-white text-gray-900 rounded-md p-1.5 focus:ring-2 focus:ring-red-500 outline-none text-center" /></div>
                   <div className="flex flex-col"><label className="text-xs text-gray-500">Infectantes (Grp A)</label><input type="number" name="qtdInfectante" value={atendimento.qtdInfectante} onChange={handleAtendimentoChange} className="border border-gray-300 bg-white text-gray-900 rounded-md p-1.5 focus:ring-2 focus:ring-red-500 outline-none text-center" /></div>
