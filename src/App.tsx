@@ -95,7 +95,7 @@ const DICIONARIO_TEXTOS = {
   'Porta tipo veneziana metálica': 'Porta tipo veneziana metálica em aço carbono #nº 16, com pintura branco neve metalatex; fechadura tipo tetra.',
   'Kit porta pronta pormade correr': 'Kit porta de correr Pormade branca lisa semi oca, com marco e alizar em PVC Wood branco, ferragens cromadas e sistema de correr compatível com a linha Pormade.',
   'Porta sanfonada': 'Porta tipo sanfonada lisa em plástico de ambos os lados na cor Branca. Marca Plasbil ou similar.',
-  'Porta de enrolar em aço galvanizado': 'Porta de enrolar em aço galvanizado de perfil liso, com pintura eletrostática prata cinza RAL 9006.'
+  'Porta de enrolar em aço galvanizado': 'Porta de enrolar em aço galvanizado de perfil liso, com pintura eletrostática prata cinza RAL 9006.',
 };
 
 const OPCOES_RDC = [
@@ -1686,3 +1686,4 @@ export default function App() {
       </div>
     </div>
   );
+}
