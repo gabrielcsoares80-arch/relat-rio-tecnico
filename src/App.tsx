@@ -1052,13 +1052,13 @@ export default function App() {
 
           {/* NOVO UPLOAD PARA IMAGEM DA CAPA */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm mb-6">
-            <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-2"><ImageIcon size={18}/> Imagem da Capa (Logomarca</h3>
+            <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-2"><ImageIcon size={18}/> Imagem da Capa (Logomarca)</h3>
             <p className="text-xs text-blue-800 mb-4"><strong>Nota:</strong> Esta é uma solução temporária para inclusão da logomarca na capa do documento gerado.</p>
             {!identificacao.imagemCapa ? (
               <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-white hover:bg-blue-50 transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <UploadCloud className="w-8 h-8 mb-2 text-blue-500" />
-                  <p className="text-sm text-gray-600"><span className="font-semibold text-blue-600">Clique para anexar</span> imagem da capa</p>
+                  <p className="text-sm text-gray-600"><span className="font-semibold text-blue-600">Clique para anexar</span> imagem da capa - Pasta memoriais (imagens memorial)</p>
                 </div>
                 <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={(e) => handleBase64Upload(setIdentificacao, 'imagemCapa', e)} />
               </label>
@@ -1301,7 +1301,7 @@ export default function App() {
             <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2"><Activity size={20} className="text-red-600"/> 5. Informações de Atendimento</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Atividades Relacionadas</label>
+                <label className="text-sm font-semibold text-gray-800 mt-2 mb-3 flex items-center gap-2">Atividades Relacionadas</label>
                 <select name="atividade" value={atendimento.atividade} onChange={handleAtendimentoChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none mb-2">
                   {ATIVIDADES_OPCOES.map((opt, i) => <option key={i} value={opt}>{opt}</option>)}
                 </select>
@@ -1310,7 +1310,7 @@ export default function App() {
                 )}
               </div>
               <div>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Capacidade Média (Múltiplos de 25)</label>
+                <label className="text-sm font-semibold text-gray-800 mt-2 mb-3 flex items-center gap-2">Capacidade Média (Múltiplos de 25)</label>
                 <div className="flex items-center gap-2">
                   <input type="number" step="25" min="25" name="capacidadeDia" value={atendimento.capacidadeDia} onChange={handleAtendimentoChange} className="w-1/2 border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none text-center" />
                   <span className="text-sm text-gray-800 font-medium">clientes/dia</span>
