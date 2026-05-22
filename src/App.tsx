@@ -1000,8 +1000,8 @@ export default function App() {
         <div className="flex flex-col mb-6">
           <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center bg-white p-6 rounded-t-xl shadow-sm border-b border-gray-200">
             <div>
-              <h1 className="text-2xl font-bold text-red-700">Gerador de Memorial Descritivo</h1>
-              <p className="text-sm text-gray-500 mt-1">Sabin Medicina Diagnóstica - Automação de Projetos</p>
+              <h1 className="text-2xl font-bold text-red-700">Gerador de memorial</h1>
+              <p className="text-sm text-gray-500 mt-1">Sabin Medicina Diagnóstica</p>
             </div>
             <div className="flex gap-2 items-center flex-wrap">
               <label className="cursor-pointer flex justify-center items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
@@ -1020,13 +1020,13 @@ export default function App() {
                 {exportDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-xl z-50 overflow-hidden">
                     <button onClick={() => { gerarDocumentoWord('descritivo'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
-                      <Hammer size={14} className="text-red-600"/> Memorial Descritivo
+                      <Hammer size={14} className="text-red-600"/> Memorial Descritivo Arq.
                     </button>
                     <button onClick={() => { gerarDocumentoWord('organizacao'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
-                      <Users size={14} className="text-red-600"/> Org. Física
+                      <Users size={14} className="text-red-600"/> Memorial Org. Física
                     </button>
                     <button onClick={() => { gerarDocumentoWord('tecnico'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
-                      <FileText size={14} className="text-red-600"/> Relatório Técnico (PBA)
+                      <FileText size={14} className="text-red-600"/> Relatório Técnico
                     </button>
                     <button onClick={() => { gerarDocumentoWord('todos'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm font-bold text-red-700 hover:bg-red-50 flex items-center gap-2">
                       <Download size={14} /> Gerar Todos os 3
@@ -1052,8 +1052,8 @@ export default function App() {
 
           {/* NOVO UPLOAD PARA IMAGEM DA CAPA */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm mb-6">
-            <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-2"><ImageIcon size={18}/> Imagem da Capa (Logomarca / Fachada)</h3>
-            <p className="text-xs text-blue-800 mb-4"><strong>Nota:</strong> Esta é uma solução temporária para inclusão da logomarca ou imagem da fachada na capa do documento gerado.</p>
+            <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-2"><ImageIcon size={18}/> Imagem da Capa (Logomarca</h3>
+            <p className="text-xs text-blue-800 mb-4"><strong>Nota:</strong> Esta é uma solução temporária para inclusão da logomarca na capa do documento gerado.</p>
             {!identificacao.imagemCapa ? (
               <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-white hover:bg-blue-50 transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -1075,7 +1075,7 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tipo de Aprovação (Objetivo)</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tipo de Aprovação</label>
                 <select name="tipoProjeto" value={identificacao.tipoProjeto} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none bg-red-50 text-red-800 font-medium">
                   <option value="PBA – Projeto Básico de Arquitetura">PBA – Projeto Básico de Arquitetura</option>
                   <option value="LTA – Laudo Técnico de Arquitetura">LTA – Laudo Técnico de Arquitetura</option>
@@ -1084,18 +1084,18 @@ export default function App() {
 
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Razão Social</label><input type="text" name="razaoSocial" value={identificacao.razaoSocial} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome Fantasia (Conforme CNPJ)</label><input type="text" name="nomeFantasia" value={identificacao.nomeFantasia} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
-              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome da Unidade (Para Capa e Textos)</label><input type="text" name="nomeUnidade" value={identificacao.nomeUnidade} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Ex: Unidade Buritis" /></div>
+              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome da Unidade</label><input type="text" name="nomeUnidade" value={identificacao.nomeUnidade} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Ex: Unidade Buritis" /></div>
               <div className="md:col-span-2 border-b border-gray-100 my-2"></div>
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Cidade</label><input type="text" name="cidade" value={identificacao.cidade} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Ex: Planaltina" /></div>
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">UF (Estado)</label><input type="text" name="uf" value={identificacao.uf} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Ex: DF" /></div>
               <div className="md:col-span-2"><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Endereço Completo</label><input type="text" name="endereco" value={identificacao.endereco} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
               
               {/* Máscaras de Autoformatação Aplicadas Aqui */}
-              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CEP (Só números)</label><input type="text" name="cep" value={identificacao.cep} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="00000-000" /></div>
-              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CNPJ (Só números)</label><input type="text" name="cnpj" value={identificacao.cnpj} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="00.000.000/0000-00" /></div>
+              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CEP</label><input type="text" name="cep" value={identificacao.cep} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="00000-000" /></div>
+              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CNPJ</label><input type="text" name="cnpj" value={identificacao.cnpj} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="00.000.000/0000-00" /></div>
               
               <div className={isCnaeManual ? "md:col-span-2 relative" : "relative"}>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CNAEs (Múltipla Seleção)</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CNAEs</label>
                 <div className="w-full border border-gray-300 rounded-md p-2 bg-[#f8fafc] flex justify-between items-center cursor-pointer" onClick={() => setCnaeDropdownOpen(!cnaeDropdownOpen)}>
                   <span className="text-sm text-gray-900 truncate">
                     {identificacao.cnaesSelecionados.length > 0 
@@ -1130,7 +1130,7 @@ export default function App() {
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Telefone Engenharia</label><input type="text" name="telefoneEngenharia" value={identificacao.telefoneEngenharia} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="(00) 0000-0000" /></div>
               
               <div className="md:col-span-2 relative">
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">E-mails (Engenharia e Projetos)</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">E-mails</label>
                 <div className="w-full border border-gray-300 rounded-md p-2 bg-[#f8fafc] flex justify-between items-center cursor-pointer" onClick={() => setEmailDropdownOpen(!emailDropdownOpen)}>
                   <span className="text-sm text-gray-900 truncate">{identificacao.emailsSelecionados.length > 0 ? identificacao.emailsSelecionados.join('; ') : 'Selecione os e-mails...'}</span>
                   <ChevronDown size={16} className="text-gray-500" />
@@ -1243,7 +1243,7 @@ export default function App() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
               <div className={isEngenheiroManual ? "md:col-span-2" : ""}>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Engenheiro(a) do Projeto (Assinatura)</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Engenheiro(a) do Projeto</label>
                 <select 
                   value={isEngenheiroManual ? 'Outro (Digitar manualmente)' : identificacao.respProjeto}
                   onChange={(e) => {
