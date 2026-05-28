@@ -16,6 +16,7 @@ const ATIVIDADES_OPCOES = [
   'Posto de atendimento, exames de diagnóstico por imagens e posto de coleta para análises clínicas.',
   'Posto de atendimento, exames de diagnóstico por imagens, posto de coleta para análises clínicas e laboratório de análises clínicas.',
   'Laboratório de análises clínicas.',
+  'Posto de atendimento, coleta para análises clínicas, laboratório de análises clínicas e serviços de imunização',
   'Outro (Especificar)'
 ];
 
@@ -39,6 +40,7 @@ const EMAILS_EQUIPE = [
   'julia.andrade@sabin.com.br',
   'luana.lucchini@sabin.com.br',
   'lucas.ribeiro@sabin.com.br',
+  'marcelo.silva@sabin.com.br',
   'mayza.lima@sabin.com.br',
   'miraglayce.nunes@sabin.com.br',
   'rafael.sa@sabin.com.br'
@@ -48,6 +50,7 @@ const ENGENHEIROS = [
   { nome: 'Selecione o responsável...', crea: '' },
   { nome: 'Miraglayce dos Santos Nunes', crea: '26559/D-DF' },
   { nome: 'Lucas Raphael Batista Ribeiro', crea: '32668/D-DF' },
+  { nome: 'Marcelo de Paula Silva', crea: '147838/D-MG'},
   { nome: 'Outro (Digitar manualmente)', crea: '' }
 ];
 
