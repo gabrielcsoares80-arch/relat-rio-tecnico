@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Save, FileText, Building2, Users, MapPin, ChevronDown, Check, Activity, Clock, Trash2, FileSignature, Info, Route, UploadCloud, AlertCircle, X, Hammer, PaintBucket, DoorOpen, Square, Plus, LayoutGrid, Droplets, Download, Image as ImageIcon } from 'lucide-react';
 
 // ============================================================================
-// CONSTANTES BASE
+// CONSTANTES BASE E DICIONÁRIOS
 // ============================================================================
 
 const LOGO_SABIN_HEADER = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg/512px-Sabin_Diagn%C3%B3stico_e_Sa%C3%BAde_logo.svg.png";
@@ -55,17 +55,17 @@ const ENGENHEIROS = [
 ];
 
 const OPCOES_MATERIAIS = {
-  fechamentosInt: ['Gesso Acartonado', 'Divisória Naval', 'Alvenaria', 'Existente'],
-  acabamentosInt: ['Pintura Acrílica (Branco Neve)', 'Pintura Acrílica (Branco Neve / Azul Del Rey)', 'Revestimento Cerâmico Branco', '1 parede com revestimento', 'Existente'],
-  fechamentosExt: ['Alvenaria', 'Fachada de Vidro', 'Existente'],
-  acabamentosExt: ['Pintura (Sol & Chuva Premium)', 'Existente'],
-  pisos: ['Porcelanato Eliane (80x80cm)', 'Porcelanato Elizabeth (60x60cm)', 'Piso Intertravado', 'Existente'],
-  rodapes: ['Rodapé Eliane (80x10cm)', 'Rodapé Elizabeth (60x10cm)', 'Existente'],
-  forros: ['Gesso Acartonado', 'Fibra Mineral', 'Laje de Concreto Existente'],
+  fechamentosInt: ['Gesso Acartonado', 'Divisória Naval', 'Alvenaria', 'Existente', 'Outros'],
+  acabamentosInt: ['Pintura Acrílica (Branco Neve)', 'Pintura Acrílica (Papel picado)', 'Pintura Acrílica (Branco Neve / Azul Del Rey)', 'Revestimento Cerâmico Branco', 'Parede com revestimento + pintura (BN)', 'Parede com revestimento + pintura (PP)', 'Existente', 'Outros'],
+  fechamentosExt: ['Alvenaria', 'Fachada de Vidro', 'Existente', 'Outros'],
+  acabamentosExt: ['Pintura (Sol & Chuva Premium)', 'Existente', 'Outros'],
+  pisos: ['Porcelanato Eliane (80x80cm)', 'Porcelanato Elizabeth (60x60cm)', 'Porcelanato Elizabeth (84x84cm)', 'Piso Intertravado', 'Existente', 'Outros'],
+  rodapes: ['Rodapé Eliane (80x10cm)', 'Rodapé Elizabeth (60x10cm)', 'Rodapé Elizabeth (84x10cm)', 'Existente', 'Outros'],
+  forros: ['Gesso Acartonado', 'Fibra Mineral', 'Laje de Concreto Existente', 'Outros'],
   esquadrias: [
     'Porta Pivotante em vidro temperado', 'Porta de correr em vidro', 'Porta de correr "mão amiga"',
-    'Kit Porta Pronta Pormade', 'Kit porta de correr Pormade', 'Porta de giro em madeira (Dalcomad)', 'Porta tipo veneziana metálica',
-    'Porta sanfonada', 'Porta de enrolar em aço galvanizado', 'Existente'
+    'Kit Porta Pronta Pormade', 'Kit porta de correr Pormade', 'Porta tipo veneziana metálica',
+    'Porta de enrolar em aço galvanizado', 'Existente', 'Outros'
   ]
 };
 
@@ -75,22 +75,26 @@ const DICIONARIO_TEXTOS = {
   'Alvenaria': 'Bloco cerâmico 19x19x9 cm, 8 furos, assentado com argamassa, emboço/reboco em argamassa, camada de regularização.',
   'Fachada de Vidro': 'Estrutura de montantes e guias em alumínio, com vidro temperado transparente de 10 mm e aplicação de película de segurança.',
   'Pintura Acrílica (Branco Neve)': 'Pintura com Tinta Acrílica para parede interna, com acabamento acetinado, liso, lavável e impermeável, na cor Branco Neve – marca Coral. Resistente à lavagem e ao uso de desinfetante.',
+  'Pintura Acrílica (Papel picado)': 'Pintura com Tinta Acrílica para parede interna, com acabamento acetinado, liso, lavável e impermeável, na cor Papel Picado – marca Suvinil. Resistente à lavagem e ao uso de desinfetante.',
   'Pintura Acrílica (Branco Neve / Azul Del Rey)': 'Paredes pintadas com tinta acrílica Branco Neve e uma parede especial pintada na cor Azul Del Rey - marca Coral. Resistente à lavagem e ao uso de desinfetante.',
-  'Revestimento Cerâmico Branco': 'Revestimento cerâmico marca Eliane/Incesa, modelo Branco Brilhante Retificado. Material monolítico (homogêneo e impermeável), vitrificado e com juntas de assentamento de 1mm.',
-  '1 parede com revestimento': 'Paredes pintadas com tinta acrílica na cor Branco Neve e uma parede em revestimento cerâmico branco (completar com informação do revestimento que já conversamos).',
+  'Revestimento Cerâmico Branco': 'Revestimento cerâmico marca Incesa, cor: Ártico. Acabamento Brilhante Retificado – 60x32cm. Material monolítico (homogêneo e impermeável) e com juntas de assentamento de 1mm.',
+  'Parede com revestimento + pintura (BN)': 'Paredes pintadas com tinta acrílica na cor Branco Neve e uma parede em revestimento cerâmico marca Incesa, cor: Ártico. Acabamento Brilhante Retificado – 60x32cm. Material monolítico (homogêneo e impermeável) e com juntas de assentamento de 1mm.',
+  'Parede com revestimento + pintura (PP)': 'Paredes pintadas com tinta acrílica na cor Papel picado e uma parede em revestimento cerâmico marca Incesa, cor: Ártico. Acabamento Brilhante Retificado – 60x32cm. Material monolítico (homogêneo e impermeável) e com juntas de assentamento de 1mm.',
   'Pintura (Sol & Chuva Premium)': 'Pintura com Tinta Acrílica PVA/Látex Fosco Proteção Sol & Chuva Premium, cor Branco – Coral.',
   'Porcelanato Eliane (80x80cm)': 'Porcelanato marca Eliane bege, polido, brilhante e retificado – 80x80cm, espessura de 9mm, Linha BIANCO PLUS PO. Acabamento em rejunte cimentício acrílico Quartzolit Weber, cor Corda. Absorção de água menor de 4%.',
   'Porcelanato Elizabeth (60x60cm)': 'Porcelanato marca Elizabeth bege, polido, brilhante e retificado – 60x60cm, espessura de 9mm, Linha BIANCO MASTER PO. Acabamento em rejunte cimentício acrílico Quartzolit. Absorção de água menor de 4%.',
+  'Porcelanato Elizabeth (84x84cm)': 'Porcelanato marca Elizabeth, cor: Urban Cimento Esm ACET, superfície: acetinada, acabamento de borda: Retificado - 840x840mm. Acabamento em rejunte cimentício acrílico, anti-mofo e resinado. Marca: Quartzolit Weber, cor: Cinza Platina, com junta de assentamento de 1,0mm. Absorção de água menor de 4%.',
   'Piso Intertravado': 'Piso Intertravado de concreto para áreas externas.',
   'Rodapé Eliane (80x10cm)': 'Rodapé embutido Eliane bege com dimensões de 80x10cm, espessura de 9mm, junta de 1mm; rejunte na cor Corda.',
   'Rodapé Elizabeth (60x10cm)': 'Rodapé embutido Elizabeth bege com dimensões de 60x10cm, junta de 1mm; rejunte na cor Corda.',
+  'Rodapé Elizabeth (84x10cm)': 'Rodapé embutido Elizabeth cinza com dimensões de 84x10cm, junta de 1mm; rejunte na cor cinza platina.',
   'Fibra Mineral': 'Forro de fibra mineral 625 mm x 625 mm x 17 mm. Acabamento da superfície: tinta vinílica à base de látex. Detalhe da borda: lay-in e regular.',
   'Laje de Concreto Existente': 'Laje de concreto existente no local com pintura em tinta látex cor branco fosca.',
   'Porta Pivotante em vidro temperado': 'Porta Pivotante em vidro temperado transparente. Vidro com 10 mm de espessura e película de segurança contra estilhaços; mola de piso; puxadores em aço inox.',
   'Porta de correr em vidro': 'Porta de correr em vidro temperado, espessura de 8mm, película de segurança contra estilhaços com acabamento jateado, trilho superior em alumínio.',
   'Porta de correr "mão amiga"': 'Porta de correr tipo "mão amiga" em vidro temperado transparente. Vidro com 8mm e película de segurança; trilho superior em alumínio.',
   'Kit Porta Pronta Pormade': 'Kit Porta Pronta Pormade branca lisa semioca, corpo do alizar branco de PVC Wood, fechaduras Pado Concept cromada.',
-  'Kit porta de correr Pormade': 'Kit porta de correr Pormade branca lisa semi oca, com marco e alizar em PVC Wood branco, ferragens cromadas e sistema de correr compatível.',
+  'Kit porta de correr Pormade': 'Kit porta de correr Pormade branca lisa semi oca, com marco e alizar em PVC Wood branco, ferragens cromadas e sistema de correr compatível com a linha Pormade.',
   'Porta de giro em madeira (Dalcomad)': 'Porta de giro em madeira - Kit Porta Branca lisa Dalcomad, com revestimento melanímico, semi-sólida.',
   'Porta tipo veneziana metálica': 'Porta tipo veneziana metálica em aço carbono #nº 16, com pintura branco neve metalatex; fechadura tipo tetra.',
   'Porta sanfonada': 'Porta tipo sanfonada lisa em plástico de ambos os lados na cor Branca. Marca Plasbil ou similar.',
@@ -104,25 +108,25 @@ const OPCOES_RDC = [
 ];
 
 const AMBIENTES_DB = [
-  { tipoId: 'recepcao', nomeTemplate: 'Recepção', definicao: 'Área climatizada, ampla, destinada a recepcionar, atender e orientar pacientes, acompanhantes, recebimento de materiais de exames, além de identificar e registrar dados de acesso.', atividades: 'Acolhimento;\nOrientação do Fluxo de circulação;\nAdmissão de Pacientes;\nIdentificação no acesso;\nIdentificação do material biológico;\nInformações gerais;\nResultado de exames;\nEspaço Infantil.', equipamentos: 'XX Televisões de 43 polegadas para a senha;\nXX Computadores;\nXX Impressora a laser multiprofissional;\n01 Aparelho telefônico;\nXX Máquinas de cartão;\nXX Etiquetadora zebra;\n01 Dispensador de senhas;\nXX Plataforma elevatória para cadeirantes.', mobiliarios: 'XX Cadeiras ergonômicas com braços;\nXX Cadeiras para atendimento (Cadeira pipe - marca alberflex);\nXX Longarina pipe três lugares sem mesa - marca Alberflex;\nXX Longarina pipe dois lugares sem mesa - marca alberflex;\nXX Cadeiras em madeira (infantil).', movelarias: 'XX Guichês de atendimento em MDF branco com painel de vidro temperado;\nXX Guichê P.C.D.;\nXX Painel para TV em MDF;\nXX Bancada de apoio;\nXX Gaveteiro;\nXX Painéis com brinquedos.', acessorios: 'XX Dispensadores de álcool gel;\nXX Lixeiras infectantes com pedal;\nXX Lixeiras para papel e plástico.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba de encaixe;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'boxColeta', nomeTemplate: 'Box de Coleta', definicao: 'Área destinada à coleta de sangue e raspagens;', atividades: 'Coleta de amostras.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno, com base sem braço cromada.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte com ventosas;\n01 Lixeira para resíduos comuns;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira em aço inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda de aço inox;\n01 Torneira com fechamento automático;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'salaColeta', nomeTemplate: 'Sala de Coleta', definicao: 'Área destinada à coleta de curvas de tolerância a glicose e lactose, e repouso para realização de exames.', atividades: 'Coleta de amostras e repouso.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno;\nXX Poltrona reclinável para repouso.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte com ventosas;\n01 Lixeira para resíduos comuns;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira em aço inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda de aço inox;\n01 Torneira com fechamento automático;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'coletaFeminina', nomeTemplate: 'Coleta Feminina (Ginecológica)', definicao: 'Área destinada a coleta ginecológica.', atividades: 'Coleta biológica.', equipamentos: '01 Foco clínico.', mobiliarios: '01 Banqueta giratória;\n01 Maca ginecológica com armação tubular, cabeceira e pés articuláveis, apoio para coxas estofado.', movelarias: '01 Gaveteiro em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Lavatório de canto;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'coletaMaca', nomeTemplate: 'Box de Coleta com Maca', definicao: 'Área destinada à coleta de sangue e raspagens para pacientes que exigem repouso.', atividades: 'Coleta de amostras.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés cromada;\n01 Maca móvel articulável em 3 partes com leito estofado.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda inox;\n01 Torneira automática;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'coletaMasculina', nomeTemplate: 'Coleta Masculina', definicao: 'Área destinada à coleta do exame Espermograma.', atividades: 'Coleta biológica;', equipamentos: '01 Televisão de 32 polegadas;', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno, com base sem braço cromada;', movelarias: '01 Nicho de apoio em MDF;', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de sabonete líquido;\n01 Dispensador de papel toalha;\n01 Lixeira para resíduos comuns;\n01 Lixeira com acionamento por pedal para resíduos infectantes;', marmoraria: 'Não se aplica', infraestrutura: '01 Ar-condicionado Split;\n01 Ventilação mecânica;\n01 Lavatório de canto;\n01 Torneira com fechamento automático;\n01 Ralo sifonado;', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'consultorio', nomeTemplate: 'Consultório Indiferenciado', definicao: 'Ambiente destinado às ações de prevenção à saúde relacionado ao processo de imunização.', atividades: 'Prevenção e consulta pré-imunização.', equipamentos: '01 Balança antropométrica mecânica;\n01 Computador;\n01 Negatoscópio.', mobiliarios: 'XX Cadeiras ergonômicas com braços;\nXX Cadeiras para atendimento (Bambu Artesian TEA);\n01 Puff Redondo.', movelarias: '01 Maca em MDF com colchão em couro ecológico;\n01 Bancada em MDF para computador;\n01 Armário em MDF para brinquedos (TEA).', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira papel;\n01 Lixeira plástico;\n01 Escada metálica para maca;\n01 Manta Ponderada Preta (TEA).', marmoraria: 'Não se aplica', infraestrutura: '01 Lavatório de canto;\n01 Torneira de enxágue;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'imunizacao', nomeTemplate: 'Sala de Imunização', definicao: 'Área destinada à aplicação de um imunobiológico dentro de todos os padrões corretos de conservação, armazenagem e indicações clínicas.', atividades: 'Armazenamento e Aplicação de Vacinas.', equipamentos: 'XX Refrigerador expositor com circuito independente;\nXX Freezer vertical Frost Free;\n02 Caixas térmicas de 45 litros;\n01 Kit de oxigênio de 5 litros;\n01 Computador.', mobiliarios: '02 Cadeiras fixa de 4 pés cromada;\n01 Braçadeira em aço inox;\n01 Cadeira ergonômica com braços.', movelarias: '01 Armário em MDF embutido na bancada;\n01 Maca em MDF com colchão em couro ecológico;\n01 Mesa em MDF para computador.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Escada metálica.', marmoraria: 'Não se aplica', infraestrutura: '01 Pia de aço inox;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'desjejum', nomeTemplate: 'Área para desjejum', definicao: 'Área destinada ao desjejum após a coleta de sangue.', atividades: 'Acolhimento;\nDesjejum;', equipamentos: '01 Filtro purificador de água potável;\n01 Máquina de café;', mobiliarios: 'XX Banquetas médias com estrutura em alumínio e assento branco;', movelarias: '01 Armário inferior modulado em MDF;', acessorios: '01 Dispensador de copos descartáveis;\n01 Dispensador de álcool em gel;\n01 Lixeira com acionamento por pedal para resíduos orgânicos;\n01 Lixeira em coluna para copos de plástico;\n01 Lixeira para resíduos comuns;', marmoraria: 'XX Bancadas em granito Especificar Cor;', infraestrutura: '01 Pia de aço inox;\n01 Torneira de enxágue;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'copa', nomeTemplate: 'Copa', definicao: 'Área destinada ao preparo de alimentos para o desjejum dos clientes.', atividades: 'Preparo de alimentos e bebidas;', equipamentos: '01 Refrigerador de 310 litros duplex;\n01 Freezer vertical de 110 litros;\n01 Liquidificador;\n01 Forno elétrico profissional;', mobiliarios: 'Não se aplica', movelarias: 'XX Armário em MDF branco embutido na bancada de granito;\n01 Armário superior em MDF branco e nicho para microondas;', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Lixeira para resíduos de plástico;\n01 Lixeira de acionamento por pedal para resíduos orgânicos;', marmoraria: 'XX Bancada em granito Especificar Cor;', infraestrutura: '01 Pia de aço inox;\n01 Torneira de enxague;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'classificacao', nomeTemplate: 'Sala de Classificação e Distribuição de Amostras', definicao: 'Área destinada a recebimento, classificação, centrifugação das amostras coletadas diariamente e medição das amostras de urina de 24 horas.', atividades: 'Recebimento e processamento primário de amostras.', equipamentos: '01 Refrigerador;\n01 Banho Maria;\n01 Centrífuga;\n01 Computador;\n01 Leitor de código de barras.', mobiliarios: 'XX Cadeira ergonômica alta.', movelarias: 'XX Armário em MDF branco embutido na bancada;\nXX Bancada em MDF para computador;\nXX Armário superior em MDF.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de sabonete líquido;\n01 Dispensador de papel toalha;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Recipiente para descarte de materiais perfuro cortantes.', marmoraria: 'Não se aplica', infraestrutura: 'XX Pia em aço inox;\nXX Torneira de enxágue automática;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'sanitario_pcd', nomeTemplate: 'Sanitário P.C.D.', definicao: 'Área destinada exclusivamente aos pacientes.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '02 Barras de apoio horizontais;\n01 Barra de apoio na vertical;\n02 Barras de apoio verticais para o lavatório;\n01 Lixeira para RSS;\n01 Porta protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'sanitario', nomeTemplate: 'Sanitário Padrão', definicao: 'Área destinada exclusivamente aos pacientes.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '01 Lixeira para RSS;\n01 Dispensador de protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'sanitarioFunc', nomeTemplate: 'Sanitário de Funcionários', definicao: 'Área destinada exclusivamente aos funcionários.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '01 Lixeira para RSS;\n01 Dispensador de protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'dml', nomeTemplate: 'D.M.L. (Depósito de Material de Limpeza)', definicao: 'Área destinada à guarda de equipamentos designados para limpeza, assim como lavagem de panos, desprezo de água e produtos de limpeza.', atividades: 'Higienização;\nArmazenamento.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: '01 Armário superior em MDF;\n01 Armário em MDF para guarda de rodos e vassouras.', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: '01 Tanque para lavagem de panos;\n01 Torneira de enxágue;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'salaRack', nomeTemplate: 'Sala Rack', definicao: 'Local destinado à guarda do rack de dados.', atividades: 'Não se aplica', equipamentos: 'XX Equipamento de Rack;', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: 'XX Ar-condicionado Split;', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'atr_inf', nomeTemplate: 'A.T.R. - Resíduos Infectantes', definicao: 'Área destinada à guarda de resíduos temporários, sendo esses infectantes. As bombonas são recolhidas por empresa especializada.', atividades: 'Armazenamento temporário.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'XX Bombonas tipo container com pedal;\nXX Pallets plástico preto com carga estimada de 500 kg.', marmoraria: 'Não se aplica', infraestrutura: '01 Torneira de enxágue;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'atr_comum', nomeTemplate: 'A.T.R. - Resíduos Comuns', definicao: 'Área destinada à guarda temporária dos recipientes contendo resíduos comuns. As bombonas são recolhidas por empresa especializada.', atividades: 'Armazenamento temporário.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'XX Bombonas tipo container com pedal;\nXX Pallets plástico preto.', marmoraria: 'Não se aplica', infraestrutura: '01 Torneira de enxágue;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } },
-  { tipoId: 'generico', nomeTemplate: 'Ambiente Genérico (Manual)', definicao: '', atividades: '', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: '', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' } }
+  { tipoId: 'recepcao', nomeTemplate: 'Recepção', definicao: 'Área climatizada, ampla, destinada a recepcionar, atender e orientar pacientes, acompanhantes, recebimento de materiais de exames, além de identificar e registrar dados de acesso.', atividades: 'Acolhimento;\nOrientação do Fluxo de circulação;\nAdmissão de Pacientes;\nIdentificação no acesso;\nIdentificação do material biológico;\nInformações gerais;\nResultado de exames;\nEspaço Infantil.', equipamentos: 'XX Televisões de 43 polegadas para a senha;\nXX Computadores;\nXX Impressora a laser multiprofissional;\n01 Aparelho telefônico;\nXX Máquinas de cartão;\nXX Etiquetadora zebra;\n01 Dispensador de senhas;\nXX Plataforma elevatória para cadeirantes.', mobiliarios: 'XX Cadeiras ergonômicas com braços;\nXX Cadeiras para atendimento (Cadeira pipe - marca alberflex);\nXX Longarina pipe três lugares sem mesa - marca Alberflex;\nXX Longarina pipe dois lugares sem mesa - marca alberflex;\nXX Cadeiras em madeira (infantil).', movelarias: 'XX Guichês de atendimento em MDF branco com painel de vidro temperado;\nXX Guichê P.C.D.;\nXX Painel para TV em MDF;\nXX Bancada de apoio;\nXX Gaveteiro;\nXX Painéis com brinquedos.', acessorios: 'XX Dispensadores de álcool gel;\nXX Lixeiras infectantes com pedal;\nXX Lixeiras para papel e plástico.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba de encaixe;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'boxColeta', nomeTemplate: 'Box de Coleta', definicao: 'Área destinada à coleta de sangue e raspagens;', atividades: 'Coleta de amostras.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno, com base sem braço cromada.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte com ventosas;\n01 Lixeira para resíduos comuns;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira em aço inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda de aço inox;\n01 Torneira com fechamento automático;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'salaColeta', nomeTemplate: 'Sala de Coleta', definicao: 'Área destinada à coleta de curvas de tolerância a glicose e lactose, e repouso para realização de exames.', atividades: 'Coleta de amostras e repouso.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno;\nXX Poltrona reclinável para repouso.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte com ventosas;\n01 Lixeira para resíduos comuns;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira em aço inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda de aço inox;\n01 Torneira com fechamento automático;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'coletaFeminina', nomeTemplate: 'Coleta Feminina (Ginecológica)', definicao: 'Área destinada a coleta ginecológica.', atividades: 'Coleta biológica.', equipamentos: '01 Foco clínico.', mobiliarios: '01 Banqueta giratória;\n01 Maca ginecológica com armação tubular, cabeceira e pés articuláveis, apoio para coxas estofado.', movelarias: '01 Gaveteiro em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes em suporte;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Lavatório de canto;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'coletaMaca', nomeTemplate: 'Box de Coleta com Maca', definicao: 'Área destinada à coleta de sangue e raspagens para pacientes que exigem repouso.', atividades: 'Coleta de amostras.', equipamentos: 'Não se aplica', mobiliarios: '01 Cadeira fixa de 4 pés cromada;\n01 Maca móvel articulável em 2 partes com leito estofado.', movelarias: '01 Armário em MDF branco impermeável com pia acoplada;\n01 Colmeia para tubos em MDF branco.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Braçadeira inox.', marmoraria: 'Não se aplica', infraestrutura: '01 Cuba redonda inox;\n01 Torneira automática;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'coletaMasculina', nomeTemplate: 'Coleta Masculina', definicao: 'Área destinada à coleta do exame Espermograma.', atividades: 'Coleta biológica;', equipamentos: '01 Televisão de 32 polegadas;', mobiliarios: '01 Cadeira fixa de 4 pés, com assento em polipropileno, com base sem braço cromada;', movelarias: '01 Nicho de apoio em MDF;', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de sabonete líquido;\n01 Dispensador de papel toalha;\n01 Lixeira para resíduos comuns;\n01 Lixeira com acionamento por pedal para resíduos infectantes;', marmoraria: 'Não se aplica', infraestrutura: '01 Ar-condicionado Split;\n01 Ventilação mecânica;\n01 Lavatório de canto;\n01 Torneira com fechamento automático;\n01 Ralo sifonado;', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'consultorio', nomeTemplate: 'Consultório Indiferenciado', definicao: 'Ambiente destinado às ações de prevenção à saúde relacionado ao processo de imunização.', atividades: 'Prevenção e consulta pré-imunização.', equipamentos: '01 Balança antropométrica mecânica;\n01 Computador;\n01 Negatoscópio.', mobiliarios: 'XX Cadeiras ergonômicas com braços;\nXX Cadeiras para atendimento (Bambu Artesian TEA);\n01 Puff Redondo.', movelarias: '01 Maca em MDF com colchão em couro ecológico;\n01 Bancada em MDF para computador;\n01 Armário em MDF para brinquedos (TEA).', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira papel;\n01 Lixeira plástico;\n01 Escada metálica para maca;\n01 Manta Ponderada Preta (TEA).', marmoraria: 'Não se aplica', infraestrutura: '01 Lavatório de canto;\n01 Torneira de enxágue;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'imunizacao', nomeTemplate: 'Sala de Imunização', definicao: 'Área destinada à aplicação de um imunobiológico dentro de todos os padrões corretos de conservação, armazenagem e indicações clínicas.', atividades: 'Armazenamento e Aplicação de Vacinas.', equipamentos: '01 Refrigerador expositor com circuito independente;\n01 Freezer vertical Frost Free;\n02 Caixas térmicas de 45 litros;\n01 Kit de oxigênio de 5 litros;\n01 Computador.', mobiliarios: '01 Cadeiras fixa de 4 pés cromada;\n01 Braçadeira em aço inox;\n01 Cadeira ergonômica com braços.', movelarias: '01 Armário em MDF embutido na bancada;\n01 Maca em MDF com colchão em couro ecológico;\n01 Mesa em MDF para computador.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Dispensador de sabonete líquido;\n01 Recipiente para descarte de materiais perfuro cortantes;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Cabideiro inox;\n01 Escada metálica.', marmoraria: '01 Bancada em granito cinza prata', infraestrutura: '01 Pia de aço inox;\n01 Torneira com fechamento automático;\nXX Ar-condicionado Split;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'desjejum', nomeTemplate: 'Área para desjejum', definicao: 'Área destinada ao desjejum após a coleta de sangue.', atividades: 'Acolhimento;\nDesjejum;', equipamentos: '01 Filtro purificador de água potável;\n01 Máquina de café;', mobiliarios: 'XX Banquetas médias com estrutura em alumínio e assento branco;', movelarias: '01 Armário inferior modulado em MDF;', acessorios: '01 Dispensador de copos descartáveis;\n01 Dispensador de álcool em gel;\n01 Lixeira com acionamento por pedal para resíduos orgânicos;\n01 Lixeira em coluna para copos de plástico;\n01 Lixeira para resíduos comuns;', marmoraria: 'XX Bancadas em granito Especificar Cor;', infraestrutura: '01 Pia de aço inox;\n01 Torneira de enxágue;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'copa', nomeTemplate: 'Copa', definicao: 'Área destinada ao preparo de alimentos para o desjejum dos clientes.', atividades: 'Preparo de alimentos e bebidas;', equipamentos: '01 Refrigerador de 310 litros duplex;\n01 Freezer vertical de 110 litros;\n01 Liquidificador;\n01 Forno elétrico profissional;', mobiliarios: 'Não se aplica', movelarias: 'XX Armário em MDF branco embutido na bancada de granito;\n01 Armário superior em MDF branco e nicho para microondas;', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de papel toalha;\n01 Lixeira para resíduos de plástico;\n01 Lixeira de acionamento por pedal para resíduos orgânicos;', marmoraria: 'XX Bancada em granito Especificar Cor;', infraestrutura: '01 Pia de aço inox;\n01 Torneira de enxague;\nXX Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'classificacao', nomeTemplate: 'Sala de Classificação e Distribuição de Amostras', definicao: 'Área destinada a recebimento, classificação, centrifugação das amostras coletadas diariamente e medição das amostras de urina de 24 horas.', atividades: 'Recebimento e processamento primário de amostras.', equipamentos: '01 Refrigerador;\n01 Banho Maria;\n01 Centrífuga;\n01 Computador;\n01 Leitor de código de barras.', mobiliarios: '01 Cadeira ergonômica alta.', movelarias: '01 Armário em MDF branco embutido na bancada;\n01 Bancada em MDF para computador;\n01 Armário superior em MDF.', acessorios: '01 Dispensador de álcool gel;\n01 Dispensador de sabonete líquido;\n01 Dispensador de papel toalha;\n01 Lixeira comum;\n01 Lixeira infectante com pedal;\n01 Recipiente para descarte de materiais perfuro cortantes.', marmoraria: '01 Bancada em granito cinza prata', infraestrutura: '01 Pia em aço inox;\n01 Torneira de enxágue automática;\n01 Ar-condicionado Split;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'sanitario_pcd', nomeTemplate: 'Sanitário P.C.D.', definicao: 'Área destinada exclusivamente aos pacientes.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '02 Barras de apoio horizontais;\n01 Barra de apoio na vertical;\n02 Barras de apoio verticais para o lavatório;\n01 Lixeira para RSS;\n01 Porta protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'sanitario', nomeTemplate: 'Sanitário Padrão', definicao: 'Área destinada exclusivamente aos pacientes.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '01 Lixeira para RSS;\n01 Dispensador de protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'sanitarioFunc', nomeTemplate: 'Sanitário de Funcionários', definicao: 'Área destinada exclusivamente aos funcionários.', atividades: 'Higiene pessoal.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: '01 Lixeira para RSS;\n01 Dispensador de protetor para assento;\n01 Dispensador de papel higiênico;\n01 Dispensador papel toalha;\n01 Dispensador sabonete;\n01 Espelho bisotado.', marmoraria: 'Não se aplica', infraestrutura: '01 Bacia sanitária;\n01 Cuba de encaixe;\n01 Torneira automática;\n01 Ducha higiênica;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'dml', nomeTemplate: 'D.M.L. (Depósito de Material de Limpeza)', definicao: 'Área destinada à guarda de equipamentos designados para limpeza, assim como lavagem de panos, desprezo de água e produtos de limpeza.', atividades: 'Higienização;\nArmazenamento.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: '01 Armário superior em MDF;\n01 Armário em MDF para guarda de rodos e vassouras.', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: '01 Tanque para lavagem de panos;\n01 Torneira de enxágue;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'salaRack', nomeTemplate: 'Sala Rack', definicao: 'Local destinado à guarda do rack de dados.', atividades: 'Não se aplica', equipamentos: 'XX Equipamento de Rack;', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: 'XX Ar-condicionado Split;', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'atr_inf', nomeTemplate: 'A.T.R. - Resíduos Infectantes', definicao: 'Área destinada à guarda de resíduos temporários, sendo esses infectantes. As bombonas são recolhidas por empresa especializada.', atividades: 'Armazenamento temporário.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'XX Bombonas tipo container com pedal;\nXX Pallets plástico preto com carga estimada de 500 kg.', marmoraria: 'Não se aplica', infraestrutura: '01 Torneira de enxágue;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'atr_comum', nomeTemplate: 'A.T.R. - Resíduos Comuns', definicao: 'Área destinada à guarda temporária dos recipientes contendo resíduos comuns. As bombonas são recolhidas por empresa especializada.', atividades: 'Armazenamento temporário.', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'XX Bombonas tipo container com pedal;\nXX Pallets plástico preto.', marmoraria: 'Não se aplica', infraestrutura: '01 Torneira de enxágue;\n01 Ralo sifonado;\n01 Ventilação mecânica.', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } },
+  { tipoId: 'generico', nomeTemplate: 'Ambiente Genérico (Manual)', definicao: '', atividades: '', equipamentos: 'Não se aplica', mobiliarios: 'Não se aplica', movelarias: 'Não se aplica', acessorios: 'Não se aplica', marmoraria: 'Não se aplica', infraestrutura: '', area: '', acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' } }
 ];
 
 const formatMask = (name, value) => {
@@ -146,6 +150,47 @@ const formatMask = (name, value) => {
   return value;
 };
 
+// ============================================================================
+// COMPONENTE AUXILIAR (Extraído para não perder foco ao digitar)
+// ============================================================================
+const MaterialCheckboxGroup = ({ title, icon: Icon, category, options, selecoes, textosExistentes, onToggle, onTextChange }) => (
+  <div className="bg-white p-6 border border-gray-200 rounded-xl shadow-sm mb-5">
+    <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
+      <Icon size={18} className="text-red-600"/> {title}
+    </h3>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {options.map(opt => (
+        <label key={opt} className="flex items-start gap-3 cursor-pointer group">
+          <div className="relative flex items-center pt-0.5">
+            <input 
+              type="checkbox" 
+              className="w-4 h-4 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer"
+              checked={selecoes[category].includes(opt)}
+              onChange={() => onToggle(category, opt)}
+            />
+          </div>
+          <span className="text-sm text-gray-700 group-hover:text-red-700 transition-colors leading-tight">{opt}</span>
+        </label>
+      ))}
+    </div>
+    {(selecoes[category].includes('Existente') || selecoes[category].includes('Outros')) && (
+      <div className="mt-4 pt-4 border-t border-dashed border-gray-200">
+        <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Especificar Material Existente/Outros</label>
+        <input 
+          type="text" 
+          value={textosExistentes[category] || ''} 
+          onChange={(e) => onTextChange(category, e.target.value)}
+          className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none text-sm placeholder-gray-400" 
+          placeholder="Digite a especificação do item..." 
+        />
+      </div>
+    )}
+  </div>
+);
+
+// ============================================================================
+// COMPONENTE PRINCIPAL
+// ============================================================================
 export default function App() {
   const [activeTab, setActiveTab] = useState('identificacao');
   const [emailDropdownOpen, setEmailDropdownOpen] = useState(false);
@@ -159,15 +204,12 @@ export default function App() {
     tipoProjeto: 'PBA – Projeto Básico de Arquitetura',
     razaoSocial: '', nomeFantasia: '', nomeUnidade: '', cidade: '', uf: '', endereco: '', cep: '', cnpj: '',
     cnaesSelecionados: [], cnaeManual: '', telefoneEngenharia: '', emailsSelecionados: [],
-    
     possuiSubsolo: false, qtdSubsolos: '1', subsolos: [{ area: '', ambientes: '' }],
     possuiTerreo: true, terreo: { area: '', ambientes: '' },
     possuiAndares: false, qtdAndares: '1', andares: [{ area: '', ambientes: '' }],
-    
     respTecnicos: [{ nome: '', conselho: '' }],
     isRespLegalManual: false,
     respLegal: 'Lídia Freire Abdalla Nery', cpfRespLegal: '693.909.246-34',
-    
     respProjeto: '', creaCauProjeto: '',
     imagemCapa: null
   });
@@ -175,6 +217,7 @@ export default function App() {
   const [atendimento, setAtendimento] = useState({
     atividade: ATIVIDADES_OPCOES[0],
     atividadeManual: '',
+    qtdGuiches: '',
     capacidadeDia: '',
     horarioSemana: 'De segunda-feira a sexta-feira das 6:30 às 17:00 com coleta até as 16:00.',
     horarioSabado: 'Sábado das 7:00 às 12:00 com coleta até as 11:00.',
@@ -335,7 +378,7 @@ export default function App() {
           area: areaRaw, acabamentos: { 
             piso: colMap.piso !== -1 && row[colMap.piso] ? row[colMap.piso] : '', rodape: colMap.rodape !== -1 && row[colMap.rodape] ? row[colMap.rodape] : '', 
             parede: colMap.parede !== -1 && row[colMap.parede] ? row[colMap.parede] : '', teto: colMap.teto !== -1 && row[colMap.teto] ? row[colMap.teto] : '', 
-            porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' 
+            porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' 
           }
         });
       }
@@ -352,7 +395,7 @@ export default function App() {
     const novoId = Date.now().toString();
     setAmbientesProjeto([...ambientesProjeto, {
       id: novoId, tipoId: template.tipoId, nomePersonalizado: template.nomeTemplate, definicao: template.definicao, atividades: template.atividades, equipamentos: template.equipamentos, mobiliarios: template.mobiliarios, movelarias: template.movelarias, acessorios: template.acessorios, marmoraria: template.marmoraria, infraestrutura: template.infraestrutura, area: '',
-      acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: '', portaFolhas: '1', portaLargura: '', portaVao: '' }
+      acabamentos: { piso: '', rodape: '', parede: '', teto: '', porta: [], portaFolhas: '1', portaLargura: '', portaVao: '' }
     }]);
     setExpandedRoomId(novoId);
   };
@@ -411,7 +454,7 @@ export default function App() {
   })();
 
   const traduzirMaterial = (itemNome, categoria) => {
-    if (itemNome === 'Existente') return materiais.textosExistentes[categoria] || 'Existente no local (Não especificado).';
+    if (itemNome === 'Existente' || itemNome === 'Outros') return materiais.textosExistentes[categoria] || `${itemNome} no local (Não especificado).`;
     return DICIONARIO_TEXTOS[itemNome] || itemNome;
   };
 
@@ -442,7 +485,15 @@ export default function App() {
         if (loadedData.atendimento) setAtendimento(loadedData.atendimento);
         if (loadedData.fluxos) setFluxos(loadedData.fluxos);
         if (loadedData.materiais) setMateriais(loadedData.materiais);
-        if (loadedData.ambientesProjeto) setAmbientesProjeto(loadedData.ambientesProjeto.map(a => ({ marmoraria: a.marmoraria || 'Não se aplica', ...a })));
+        if (loadedData.ambientesProjeto) {
+          setAmbientesProjeto(loadedData.ambientesProjeto.map(a => {
+            // Corrige se a porta estiver salva como string no json antigo
+            if (a.acabamentos && typeof a.acabamentos.porta === 'string') {
+               a.acabamentos.porta = a.acabamentos.porta ? [a.acabamentos.porta] : [];
+            }
+            return { marmoraria: a.marmoraria || 'Não se aplica', ...a };
+          }));
+        }
         if (loadedData.instalacoes) setInstalacoes(loadedData.instalacoes);
         if (loadedData.isEngenheiroManual !== undefined) setIsEngenheiroManual(loadedData.isEngenheiroManual);
         if (loadedData.isCnaeManual !== undefined) setIsCnaeManual(loadedData.isCnaeManual);
@@ -553,10 +604,13 @@ export default function App() {
 
     const htmlAmbientes = ambientesProjeto.length > 0 ? ambientesProjeto.map((amb, i) => {
       const folhaStr = amb.acabamentos.portaFolhas == 1 ? '1 folha' : `${amb.acabamentos.portaFolhas} folhas`;
+      
       let descPorta = '';
-      if(amb.acabamentos.porta && amb.acabamentos.porta !== 'Sem porta (Vão livre)' && amb.acabamentos.porta !== 'Não se aplica') {
-         descPorta = `${amb.acabamentos.porta} com ${folhaStr} de ${amb.acabamentos.portaLargura || 'XX'} cm cada. Vão livre de ${amb.acabamentos.portaVao || 'XX'} cm.`;
-      } else if (amb.acabamentos.porta === 'Sem porta (Vão livre)') {
+      const portasSelecionadas = Array.isArray(amb.acabamentos.porta) ? amb.acabamentos.porta : (amb.acabamentos.porta ? [amb.acabamentos.porta] : []);
+      
+      if (portasSelecionadas.length > 0 && !portasSelecionadas.includes('Não se aplica') && !portasSelecionadas.includes('Sem porta (Vão livre)')) {
+         descPorta = portasSelecionadas.map(p => `${p} com ${folhaStr} de ${amb.acabamentos.portaLargura || 'XX'} cm cada. Vão livre de ${amb.acabamentos.portaVao || 'XX'} cm.`).join('<br>');
+      } else if (portasSelecionadas.includes('Sem porta (Vão livre)')) {
          descPorta = `Sem porta (Vão livre).`;
       } else {
          descPorta = 'Não se aplica';
@@ -953,41 +1007,6 @@ export default function App() {
     document.body.removeChild(link);
   };
 
-  const MaterialCheckboxGroup = ({ title, icon: Icon, category, options }) => (
-    <div className="bg-white p-6 border border-gray-200 rounded-xl shadow-sm mb-5">
-      <h3 className="font-semibold text-gray-800 mb-4 flex items-center gap-2 border-b pb-2">
-        <Icon size={18} className="text-red-600"/> {title}
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-        {options.map(opt => (
-          <label key={opt} className="flex items-start gap-3 cursor-pointer group">
-            <div className="relative flex items-center pt-0.5">
-              <input 
-                type="checkbox" 
-                className="w-4 h-4 text-red-600 rounded border-gray-300 focus:ring-red-500 cursor-pointer"
-                checked={materiais.selecoes[category].includes(opt)}
-                onChange={() => handleMaterialToggle(category, opt)}
-              />
-            </div>
-            <span className="text-sm text-gray-700 group-hover:text-red-700 transition-colors leading-tight">{opt}</span>
-          </label>
-        ))}
-      </div>
-      {materiais.selecoes[category].includes('Existente') && (
-        <div className="mt-4 pt-4 border-t border-dashed border-gray-200">
-          <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Especificar Material Existente</label>
-          <input 
-            type="text" 
-            value={materiais.textosExistentes[category]} 
-            onChange={(e) => handleTextosMateriais(category, e.target.value)}
-            className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none text-sm placeholder-gray-400" 
-            placeholder="Digite a especificação do item existente..." 
-          />
-        </div>
-      )}
-    </div>
-  );
-
   const fluxosConfig = [
     { id: 'clientes', title: '8.1. Fluxo de Clientes' },
     { id: 'funcionarios', title: '8.2. Fluxo de Funcionários' },
@@ -1003,8 +1022,8 @@ export default function App() {
         <div className="flex flex-col mb-6">
           <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center bg-white p-6 rounded-t-xl shadow-sm border-b border-gray-200">
             <div>
-              <h1 className="text-2xl font-bold text-red-700">Gerador de memorial</h1>
-              <p className="text-sm text-gray-500 mt-1">Sabin Medicina Diagnóstica</p>
+              <h1 className="text-2xl font-bold text-red-700">Gerador de Memorial Descritivo</h1>
+              <p className="text-sm text-gray-500 mt-1">Sabin Medicina Diagnóstica - Automação de Projetos</p>
             </div>
             <div className="flex gap-2 items-center flex-wrap">
               <label className="cursor-pointer flex justify-center items-center gap-2 bg-white hover:bg-gray-50 text-gray-700 border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm">
@@ -1023,13 +1042,13 @@ export default function App() {
                 {exportDropdownOpen && (
                   <div className="absolute right-0 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-xl z-50 overflow-hidden">
                     <button onClick={() => { gerarDocumentoWord('descritivo'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
-                      <Hammer size={14} className="text-red-600"/> Memorial Descritivo Arq.
+                      <Hammer size={14} className="text-red-600"/> Memorial Descritivo
                     </button>
                     <button onClick={() => { gerarDocumentoWord('organizacao'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
-                      <Users size={14} className="text-red-600"/> Memorial Org. Física
+                      <Users size={14} className="text-red-600"/> Org. Física
                     </button>
                     <button onClick={() => { gerarDocumentoWord('tecnico'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-red-50 border-b border-gray-100 flex items-center gap-2">
-                      <FileText size={14} className="text-red-600"/> Relatório Técnico
+                      <FileText size={14} className="text-red-600"/> Relatório Técnico (PBA)
                     </button>
                     <button onClick={() => { gerarDocumentoWord('todos'); setExportDropdownOpen(false); }} className="w-full text-left px-4 py-3 text-sm font-bold text-red-700 hover:bg-red-50 flex items-center gap-2">
                       <Download size={14} /> Gerar Todos os 3
@@ -1055,13 +1074,13 @@ export default function App() {
 
           {/* NOVO UPLOAD PARA IMAGEM DA CAPA */}
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 shadow-sm mb-6">
-            <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-2"><ImageIcon size={18}/> Imagem da Capa (Logomarca)</h3>
-            <p className="text-xs text-blue-800 mb-4"><strong>Nota:</strong> Esta é uma solução temporária para inclusão da logomarca na capa do documento gerado.</p>
+            <h3 className="font-semibold text-blue-900 flex items-center gap-2 mb-2"><ImageIcon size={18}/> Imagem da Capa (Logomarca / Fachada)</h3>
+            <p className="text-xs text-blue-800 mb-4"><strong>Nota:</strong> Esta é uma solução temporária para inclusão da logomarca ou imagem da fachada na capa do documento gerado.</p>
             {!identificacao.imagemCapa ? (
               <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-blue-300 rounded-lg cursor-pointer bg-white hover:bg-blue-50 transition-colors">
                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                   <UploadCloud className="w-8 h-8 mb-2 text-blue-500" />
-                  <p className="text-sm text-gray-600"><span className="font-semibold text-blue-600">Clique para anexar</span> imagem da capa - Pasta memoriais (imagens memorial)</p>
+                  <p className="text-sm text-gray-600"><span className="font-semibold text-blue-600">Clique para anexar</span> imagem da capa</p>
                 </div>
                 <input type="file" className="hidden" accept="image/png, image/jpeg" onChange={(e) => handleBase64Upload(setIdentificacao, 'imagemCapa', e)} />
               </label>
@@ -1078,7 +1097,7 @@ export default function App() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tipo de Aprovação</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tipo de Aprovação (Objetivo)</label>
                 <select name="tipoProjeto" value={identificacao.tipoProjeto} onChange={handleChange} className="w-full border border-gray-300 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none bg-red-50 text-red-800 font-medium">
                   <option value="PBA – Projeto Básico de Arquitetura">PBA – Projeto Básico de Arquitetura</option>
                   <option value="LTA – Laudo Técnico de Arquitetura">LTA – Laudo Técnico de Arquitetura</option>
@@ -1087,18 +1106,18 @@ export default function App() {
 
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Razão Social</label><input type="text" name="razaoSocial" value={identificacao.razaoSocial} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome Fantasia (Conforme CNPJ)</label><input type="text" name="nomeFantasia" value={identificacao.nomeFantasia} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
-              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome da Unidade</label><input type="text" name="nomeUnidade" value={identificacao.nomeUnidade} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Ex: Unidade Buritis" /></div>
+              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Nome da Unidade (Para Capa e Textos)</label><input type="text" name="nomeUnidade" value={identificacao.nomeUnidade} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Ex: Unidade Buritis" /></div>
               <div className="md:col-span-2 border-b border-gray-100 my-2"></div>
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Cidade</label><input type="text" name="cidade" value={identificacao.cidade} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Ex: Planaltina" /></div>
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">UF (Estado)</label><input type="text" name="uf" value={identificacao.uf} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Ex: DF" /></div>
               <div className="md:col-span-2"><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Endereço Completo</label><input type="text" name="endereco" value={identificacao.endereco} onChange={handleChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
               
               {/* Máscaras de Autoformatação Aplicadas Aqui */}
-              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CEP</label><input type="text" name="cep" value={identificacao.cep} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="00000-000" /></div>
-              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CNPJ</label><input type="text" name="cnpj" value={identificacao.cnpj} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="00.000.000/0000-00" /></div>
+              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CEP (Só números)</label><input type="text" name="cep" value={identificacao.cep} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="00000-000" /></div>
+              <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CNPJ (Só números)</label><input type="text" name="cnpj" value={identificacao.cnpj} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="00.000.000/0000-00" /></div>
               
               <div className={isCnaeManual ? "md:col-span-2 relative" : "relative"}>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CNAEs</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">CNAEs (Múltipla Seleção)</label>
                 <div className="w-full border border-gray-300 rounded-md p-2 bg-[#f8fafc] flex justify-between items-center cursor-pointer" onClick={() => setCnaeDropdownOpen(!cnaeDropdownOpen)}>
                   <span className="text-sm text-gray-900 truncate">
                     {identificacao.cnaesSelecionados.length > 0 
@@ -1133,7 +1152,7 @@ export default function App() {
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Telefone Engenharia</label><input type="text" name="telefoneEngenharia" value={identificacao.telefoneEngenharia} onChange={(e) => handleChangeWithMask(e, setIdentificacao)} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="(00) 0000-0000" /></div>
               
               <div className="md:col-span-2 relative">
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">E-mails</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">E-mails (Engenharia e Projetos)</label>
                 <div className="w-full border border-gray-300 rounded-md p-2 bg-[#f8fafc] flex justify-between items-center cursor-pointer" onClick={() => setEmailDropdownOpen(!emailDropdownOpen)}>
                   <span className="text-sm text-gray-900 truncate">{identificacao.emailsSelecionados.length > 0 ? identificacao.emailsSelecionados.join('; ') : 'Selecione os e-mails...'}</span>
                   <ChevronDown size={16} className="text-gray-500" />
@@ -1246,7 +1265,7 @@ export default function App() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-6">
               <div className={isEngenheiroManual ? "md:col-span-2" : ""}>
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Engenheiro(a) do Projeto</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Engenheiro(a) do Projeto (Assinatura)</label>
                 <select 
                   value={isEngenheiroManual ? 'Outro (Digitar manualmente)' : identificacao.respProjeto}
                   onChange={(e) => {
@@ -1304,7 +1323,7 @@ export default function App() {
             <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2"><Activity size={20} className="text-red-600"/> 5. Informações de Atendimento</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
               <div className="md:col-span-2">
-                <label className="text-sm font-semibold text-gray-800 mt-2 mb-3 flex items-center gap-2">Atividades Relacionadas</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Atividades Relacionadas</label>
                 <select name="atividade" value={atendimento.atividade} onChange={handleAtendimentoChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none mb-2">
                   {ATIVIDADES_OPCOES.map((opt, i) => <option key={i} value={opt}>{opt}</option>)}
                 </select>
@@ -1312,13 +1331,18 @@ export default function App() {
                   <input type="text" name="atividadeManual" value={atendimento.atividadeManual} onChange={handleAtendimentoChange} className="w-full border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" placeholder="Digite a atividade relacionada..." />
                 )}
               </div>
-              <div>
-                <label className="text-sm font-semibold text-gray-800 mt-2 mb-3 flex items-center gap-2">Capacidade Média (Múltiplos de 25)</label>
+              
+              <div className="md:col-span-2">
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Quantidade de Guichês de Atendimento</label>
                 <div className="flex items-center gap-2">
-                  <input type="number" step="25" min="25" name="capacidadeDia" value={atendimento.capacidadeDia} onChange={handleAtendimentoChange} className="w-1/2 border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none text-center" />
-                  <span className="text-sm text-gray-800 font-medium">clientes/dia</span>
+                  <input type="number" min="1" name="qtdGuiches" value={atendimento.qtdGuiches} onChange={(e) => {
+                    const val = e.target.value;
+                    setAtendimento({ ...atendimento, qtdGuiches: val, capacidadeDia: val ? (parseInt(val) * 25).toString() : '' });
+                  }} className="w-1/4 border border-gray-300 bg-[#f8fafc] text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none text-center" placeholder="Ex: 4" />
+                  <span className="text-sm text-gray-800 font-medium">Guichês (Calcula: {atendimento.capacidadeDia || 0} clientes/dia)</span>
                 </div>
               </div>
+
               <div className="md:col-span-2">
                 <h3 className="text-sm font-semibold text-gray-800 mt-2 mb-3 flex items-center gap-2"><Clock size={16}/> Horário de Funcionamento</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1328,9 +1352,8 @@ export default function App() {
               </div>
             </div>
 
-            {/* NOVO UPLOAD PARA IMAGEM DA CAIXA DE TRANSPORTE */}
             <div className="border-t border-gray-200 mt-6 pt-6 mb-8">
-              <h3 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2"><ImageIcon size={16}/> Imagem da Caixa de Transporte</h3>
+              <h3 className="text-sm font-semibold text-gray-800 mb-4 flex items-center gap-2"><ImageIcon size={16}/> Imagem da Caixa de Transporte (Embalagens)</h3>
               {!atendimento.imagemEmbalagens ? (
                 <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-red-200 rounded-lg cursor-pointer bg-red-50/30 hover:bg-red-50 transition-colors">
                   <div className="flex flex-col items-center justify-center pt-5 pb-6">
@@ -1347,23 +1370,19 @@ export default function App() {
               )}
             </div>
 
-            <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2 mt-8"><Trash2 size={20} className="text-red-600"/> 6. Resíduos Sólidos</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-6 border-b pb-2 flex items-center gap-2 mt-8"><Trash2 size={20} className="text-red-600"/> Resíduos Sólidos (Bombonas)</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 bg-gray-50 p-5 rounded-lg border border-gray-200">
               <div><label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Total de Bombonas</label><input type="number" name="qtdBombonasTotal" value={atendimento.qtdBombonasTotal} onChange={handleAtendimentoChange} className="w-full border border-gray-300 bg-white text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none" /></div>
               <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tipo de Bombona</label>
+                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Tipo de Bombona (PEAD)</label>
                 <select name="tipoBombona" value={atendimento.tipoBombona} onChange={handleAtendimentoChange} className="w-full border border-gray-300 bg-white text-gray-900 rounded-md p-2 focus:ring-2 focus:ring-red-500 outline-none text-sm">
                   {BOMBONAS_OPCOES.map((b) => <option key={b.litros} value={b.litros}>{b.litros} Litros (Peso: {b.peso} | Dimensões: {b.dim})</option>)}
                 </select>
               </div>
-              <div className="md:col-span-3 border-t border-gray-200 my-2 pt-4">
-                <span className="text-sm font-semibold text-gray-800 mb-3 block">Distribuição por Categoria:</span>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <div className="flex flex-col"><label className="text-xs text-gray-500">Comuns (Grp D)</label><input type="number" name="qtdComum" value={atendimento.qtdComum} onChange={handleAtendimentoChange} className="border border-gray-300 bg-white text-gray-900 rounded-md p-1.5 focus:ring-2 focus:ring-red-500 outline-none text-center" /></div>
-                  <div className="flex flex-col"><label className="text-xs text-gray-500">Infectantes (Grp A)</label><input type="number" name="qtdInfectante" value={atendimento.qtdInfectante} onChange={handleAtendimentoChange} className="border border-gray-300 bg-white text-gray-900 rounded-md p-1.5 focus:ring-2 focus:ring-red-500 outline-none text-center" /></div>
-                  <div className="flex flex-col"><label className="text-xs text-gray-500">Químicos (Grp B)</label><input type="number" name="qtdQuimico" value={atendimento.qtdQuimico} onChange={handleAtendimentoChange} className="border border-gray-300 bg-white text-gray-900 rounded-md p-1.5 focus:ring-2 focus:ring-red-500 outline-none text-center" /></div>
-                  <div className="flex flex-col"><label className="text-xs text-gray-500">Perfuro. (Grp E)</label><input type="number" name="qtdPerfurocortante" value={atendimento.qtdPerfurocortante} onChange={handleAtendimentoChange} className="border border-gray-300 bg-white text-gray-900 rounded-md p-1.5 focus:ring-2 focus:ring-red-500 outline-none text-center" /></div>
-                </div>
+              <div className="md:col-span-3 border-t border-gray-200 my-2 pt-4 flex flex-col md:flex-row gap-6 items-start md:items-center">
+                <span className="text-sm font-semibold text-gray-800">Distribuição:</span>
+                <div className="flex items-center gap-2"><input type="number" name="qtdComum" value={atendimento.qtdComum} onChange={handleAtendimentoChange} className="w-16 border border-gray-300 bg-white text-gray-900 rounded-md p-1.5 focus:ring-2 focus:ring-red-500 outline-none text-center" /><span className="text-sm text-gray-800">Comuns</span></div>
+                <div className="flex items-center gap-2"><input type="number" name="qtdBiologico" value={atendimento.qtdBiologico} onChange={handleAtendimentoChange} className="w-16 border border-gray-300 bg-white text-gray-900 rounded-md p-1.5 focus:ring-2 focus:ring-red-500 outline-none text-center" /><span className="text-sm text-gray-800">Biológicos</span></div>
               </div>
             </div>
           </div>
@@ -1451,16 +1470,16 @@ export default function App() {
         <div className={activeTab === 'materiais' ? "space-y-6 animate-in fade-in" : "hidden"}>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
-              <MaterialCheckboxGroup title="9.3. Fechamentos Internos" icon={Hammer} category="fechamentosInt" options={OPCOES_MATERIAIS.fechamentosInt} />
-              <MaterialCheckboxGroup title="9.4. Acabamentos Internos" icon={PaintBucket} category="acabamentosInt" options={OPCOES_MATERIAIS.acabamentosInt} />
-              <MaterialCheckboxGroup title="9.5. Fechamentos Externos" icon={Building2} category="fechamentosExt" options={OPCOES_MATERIAIS.fechamentosExt} />
-              <MaterialCheckboxGroup title="9.6. Acabamentos Externos" icon={PaintBucket} category="acabamentosExt" options={OPCOES_MATERIAIS.acabamentosExt} />
+              <MaterialCheckboxGroup title="9.3. Fechamentos Internos" icon={Hammer} category="fechamentosInt" options={OPCOES_MATERIAIS.fechamentosInt} selecoes={materiais.selecoes} textosExistentes={materiais.textosExistentes} onToggle={handleMaterialToggle} onTextChange={handleTextosMateriais} />
+              <MaterialCheckboxGroup title="9.4. Acabamentos Internos" icon={PaintBucket} category="acabamentosInt" options={OPCOES_MATERIAIS.acabamentosInt} selecoes={materiais.selecoes} textosExistentes={materiais.textosExistentes} onToggle={handleMaterialToggle} onTextChange={handleTextosMateriais} />
+              <MaterialCheckboxGroup title="9.5. Fechamentos Externos" icon={Building2} category="fechamentosExt" options={OPCOES_MATERIAIS.fechamentosExt} selecoes={materiais.selecoes} textosExistentes={materiais.textosExistentes} onToggle={handleMaterialToggle} onTextChange={handleTextosMateriais} />
+              <MaterialCheckboxGroup title="9.6. Acabamentos Externos" icon={PaintBucket} category="acabamentosExt" options={OPCOES_MATERIAIS.acabamentosExt} selecoes={materiais.selecoes} textosExistentes={materiais.textosExistentes} onToggle={handleMaterialToggle} onTextChange={handleTextosMateriais} />
             </div>
             <div>
-              <MaterialCheckboxGroup title="9.8. Pisos Internos" icon={Square} category="pisos" options={OPCOES_MATERIAIS.pisos} />
-              <MaterialCheckboxGroup title="9.9. Rodapés" icon={Square} category="rodapes" options={OPCOES_MATERIAIS.rodapes} />
-              <MaterialCheckboxGroup title="9.11. Forros" icon={Hammer} category="forros" options={OPCOES_MATERIAIS.forros} />
-              <MaterialCheckboxGroup title="9.12. Esquadrias e Portas" icon={DoorOpen} category="esquadrias" options={OPCOES_MATERIAIS.esquadrias} />
+              <MaterialCheckboxGroup title="9.8. Pisos Internos" icon={Square} category="pisos" options={OPCOES_MATERIAIS.pisos} selecoes={materiais.selecoes} textosExistentes={materiais.textosExistentes} onToggle={handleMaterialToggle} onTextChange={handleTextosMateriais} />
+              <MaterialCheckboxGroup title="9.9. Rodapés" icon={Square} category="rodapes" options={OPCOES_MATERIAIS.rodapes} selecoes={materiais.selecoes} textosExistentes={materiais.textosExistentes} onToggle={handleMaterialToggle} onTextChange={handleTextosMateriais} />
+              <MaterialCheckboxGroup title="9.11. Forros" icon={Hammer} category="forros" options={OPCOES_MATERIAIS.forros} selecoes={materiais.selecoes} textosExistentes={materiais.textosExistentes} onToggle={handleMaterialToggle} onTextChange={handleTextosMateriais} />
+              <MaterialCheckboxGroup title="9.12. Esquadrias e Portas" icon={DoorOpen} category="esquadrias" options={OPCOES_MATERIAIS.esquadrias} selecoes={materiais.selecoes} textosExistentes={materiais.textosExistentes} onToggle={handleMaterialToggle} onTextChange={handleTextosMateriais} />
             </div>
           </div>
         </div>
@@ -1524,7 +1543,9 @@ export default function App() {
 
             {ambientesProjeto.map((amb, index) => {
               const isExpanded = expandedRoomId === amb.id;
-              const hasDoor = amb.acabamentos.porta && amb.acabamentos.porta !== '' && amb.acabamentos.porta !== 'Sem porta (Vão livre)' && amb.acabamentos.porta !== 'Não se aplica';
+              
+              const portasSelecionadas = Array.isArray(amb.acabamentos.porta) ? amb.acabamentos.porta : (amb.acabamentos.porta ? [amb.acabamentos.porta] : []);
+              const hasDoor = portasSelecionadas.length > 0 && !portasSelecionadas.includes('Sem porta (Vão livre)') && !portasSelecionadas.includes('Não se aplica');
 
               return (
                 <div key={amb.id} className={`bg-white rounded-xl shadow-sm border transition-all ${isExpanded ? 'border-red-400 ring-1 ring-red-100' : 'border-gray-200'}`}>
@@ -1588,22 +1609,48 @@ export default function App() {
                         </div>
                         
                         <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-5 border-t border-gray-200 pt-4 mt-2">
-                          <div>
-                            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Porta / Esquadria</label>
-                            <select value={amb.acabamentos.porta} onChange={(e) => atualizarAmbiente(amb.id, 'acabamentos.porta', e.target.value)} className="w-full border border-gray-300 rounded-md p-2 text-sm bg-white text-gray-900">
-                              <option value="">Selecione...</option><option value="Não se aplica">Não se aplica</option><option value="Sem porta (Vão livre)">Sem porta (Vão livre)</option>{materiais.selecoes.esquadrias.map(op => <option key={op} value={op}>{op}</option>)}
-                            </select>
+                          <div className="md:col-span-3">
+                            <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Porta / Esquadria (Pode selecionar mais de uma)</label>
+                            <div className="w-full border border-gray-300 rounded-md p-2 text-sm bg-white text-gray-900 max-h-40 overflow-y-auto">
+                              {['Não se aplica', 'Sem porta (Vão livre)', ...materiais.selecoes.esquadrias].map(op => {
+                                const isChecked = Array.isArray(amb.acabamentos.porta) ? amb.acabamentos.porta.includes(op) : amb.acabamentos.porta === op;
+                                return (
+                                  <label key={op} className="flex items-center gap-2 mb-1.5 cursor-pointer">
+                                    <input 
+                                      type="checkbox" 
+                                      checked={isChecked}
+                                      className="text-red-600 rounded border-gray-300 focus:ring-red-500"
+                                      onChange={(e) => {
+                                        let current = Array.isArray(amb.acabamentos.porta) ? [...amb.acabamentos.porta] : (amb.acabamentos.porta ? [amb.acabamentos.porta] : []);
+                                        if (e.target.checked) {
+                                          if (op === 'Não se aplica' || op === 'Sem porta (Vão livre)') {
+                                            current = [op];
+                                          } else {
+                                            current = current.filter(x => x !== 'Não se aplica' && x !== 'Sem porta (Vão livre)');
+                                            current.push(op);
+                                          }
+                                        } else {
+                                          current = current.filter(x => x !== op);
+                                        }
+                                        atualizarAmbiente(amb.id, 'acabamentos.porta', current);
+                                      }}
+                                    />
+                                    <span className="text-sm">{op}</span>
+                                  </label>
+                                );
+                              })}
+                            </div>
                           </div>
                           
                           {hasDoor && (
                             <>
                               <div className="flex gap-3">
                                 <div className="w-1/3">
-                                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Folhas</label>
+                                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Folhas (Qtd)</label>
                                   <input type="number" min="1" value={amb.acabamentos.portaFolhas} onChange={(e) => atualizarAmbiente(amb.id, 'acabamentos.portaFolhas', e.target.value)} className="w-full border border-gray-300 rounded-md p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 text-center bg-white text-gray-900" />
                                 </div>
                                 <div className="w-2/3">
-                                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Largura (Folha)</label>
+                                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Largura (por folha)</label>
                                   <div className="flex items-center gap-1">
                                     <input type="number" value={amb.acabamentos.portaLargura} onChange={(e) => atualizarAmbiente(amb.id, 'acabamentos.portaLargura', e.target.value)} className="w-full border border-gray-300 rounded-md p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 text-center bg-white text-gray-900" placeholder="Ex: 80" />
                                     <span className="text-xs text-gray-500">cm</span>
@@ -1611,7 +1658,7 @@ export default function App() {
                                 </div>
                               </div>
                               <div>
-                                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Vão Livre</label>
+                                <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">Vão Livre Total</label>
                                 <div className="flex items-center gap-1">
                                   <input type="number" value={amb.acabamentos.portaVao} onChange={(e) => atualizarAmbiente(amb.id, 'acabamentos.portaVao', e.target.value)} className="w-full border border-gray-300 rounded-md p-2 text-sm outline-none focus:ring-1 focus:ring-red-500 text-center bg-white text-gray-900" placeholder="Ex: 75" />
                                   <span className="text-xs text-gray-500">cm</span>
@@ -1663,9 +1710,9 @@ export default function App() {
                   <div className="text-center text-sm text-gray-800 bg-gray-50 p-6 rounded border border-gray-200">
                     <div className="mb-8 mt-4">
                       <div className="border-b border-gray-400 w-64 mx-auto mb-1"></div>
-                      <p className="font-bold uppercase">{identificacao.respProjeto || '[Engenheiro(a)]'}</p>
+                      <p className="font-bold uppercase">{identificacao.respProjeto || 'NOME'}</p>
                       <p>Engenheira/o Responsável Pelo Projeto</p>
-                      <p>CREA/CAU: {identificacao.creaCauProjeto || '[000000]'}</p>
+                      <p>CREA/CAU: {identificacao.creaCauProjeto || 'XXXXX/D-UF'}</p>
                     </div>
                     {identificacao.respTecnicos.map((rt, i) => (
                       <div key={i} className="mb-8">
