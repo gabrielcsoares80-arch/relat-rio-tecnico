@@ -505,6 +505,27 @@ export default function App() {
   };
 
   const gerarDocumentoWord = (tipoRelatorio) => {
+      // 💡 NOVA FUNÇÃO DE NUMERAÇÃO INTELIGENTE
+    const formatarListaNumerada = (texto, prefixo) => {
+      if (!texto) return '<p>Não há itens informados.</p>';
+      
+      const linhas = texto.split('\n');
+      let html = '';
+      let contador = 1;
+
+      linhas.forEach(linha => {
+        const linhaLimpa = linha.trim();
+        if (linhaLimpa === '') {
+          // Insere espaço, mas NÃO gasta número
+          html += `<p style="margin-bottom: 10px;">&nbsp;</p>`;
+        } else {
+          // Insere o texto com o número certo
+          html += `<p style="margin-bottom: 10px; text-align: justify;"><b>${prefixo}.${contador}</b> ${linhaLimpa}</p>`;
+          contador++;
+        }
+      });
+      return html;
+    };
     if (tipoRelatorio === 'todos') {
       gerarDocumentoWord('descritivo');
       setTimeout(() => gerarDocumentoWord('organizacao'), 1000);
@@ -666,8 +687,6 @@ export default function App() {
         <style>
           body { font-family: 'Calibri', sans-serif; font-size: 11pt; line-height: 1.5; color: #000; text-align: justify; }
           h1, h2, h3 { page-break-after: avoid; }
-          .keep-with-next { page-break-after: avoid; }
-          .avoid-break { page-break-inside: avoid; }
           h1 { font-size: 14pt; font-weight: bold; text-align: center; margin-top: 24px; text-transform: uppercase; }
           h2 { font-size: 12pt; font-weight: bold; margin-top: 24px; margin-left: 10px; background-color: #f3f4f6; padding: 5px; text-transform: uppercase; }
           h3 { font-size: 11pt; font-weight: bold; margin-top: 15px; margin-left: 20px; color: #cc0000; }
@@ -680,19 +699,31 @@ export default function App() {
         </style>
       </head>
       <body>
-        
-        <table width="100%" height="900" style="border: none; margin: 0; padding: 0;">
-          <tr>
-            <td valign="top" align="right">
-              <div style="font-size: 12pt; margin-bottom: 100px;">${dataCapa}</div>
-              
-              <table align="center" width="400" style="width: 10cm; margin: 0 auto 100px auto; border-collapse: collapse; border: none;">
-                <tr>
-                  <td align="center" style="border: none; padding: 0;">
-                    <img src="${identificacao.imagemCapa || LOGO_SABIN_HEADER}" width="400" style="width: 100%; max-width: 10cm; height: auto;" alt="Logotipo / Capa" />
-                  </td>
-                </tr>
-              </table>
+<!-- 💡 NOVA CAPA SEM TABELAS (Não quebra no Word) -->
+        <div style="text-align: center; margin-top: 60px;">
+          <img src="${LOGO_SABIN_HEADER}" alt="Logo Sabin" style="width: 220px; margin-bottom: 60px;" />
+          
+          <h1 style="font-size: 24pt; font-weight: bold; color: #cc0000; text-transform: uppercase; margin-bottom: 20px;">
+            MEMORIAL DESCRITIVO DE ARQUITETURA
+          </h1>
+          
+          <h2 style="font-size: 16pt; font-weight: bold; color: #333; margin-bottom: 50px;">
+            ${identificacao.nomeFantasia || '[NOME FANTASIA DA UNIDADE]'}
+          </h2>
+          
+          ${capaImagem 
+            ? `<img src="${capaImagem}" style="max-width: 100%; height: auto; border: 1px solid #ccc; margin-bottom: 50px;" />` 
+            : `<div style="width: 100%; height: 250px; background-color: #f0f0f0; border: 1px dashed #ccc; margin-bottom: 50px; display: flex; align-items: center; justify-content: center;"><p style="color: #666;">Sem Imagem de Capa</p></div>`
+          }
+          
+          <div style="font-size: 12pt; font-weight: bold; margin-top: 50px;">
+            <p>${identificacao.cidade || '[Cidade]'} - ${identificacao.uf || '[UF]'}</p>
+            <p>${new Date().toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}</p>
+          </div>
+        </div>
+
+        <!-- Quebra de página APENAS APÓS A CAPA -->
+        <br clear="all" style="mso-special-character:line-break;page-break-before:always" />
 
               <div style="margin-bottom: 80px;">
                 <p style="font-size: 26pt; font-weight: bold; color: #000; margin: 0; padding: 0;">${docTitle}</p>
