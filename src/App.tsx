@@ -552,11 +552,6 @@ export default function App() {
     
     const cidadeFormatada = identificacao.cidade ? identificacao.cidade : '[Cidade]';
     const dataFormatada = `${cidadeFormatada}, ${meses[hoje.getMonth()]} de ${hoje.getFullYear()}.`;
-    const dataCapa = `${cidadeFormatada.toUpperCase()}, ${meses[hoje.getMonth()]} DE ${hoje.getFullYear()}`;
-    const ufFormatado = identificacao.uf ? identificacao.uf : '[UF]';
-    const nomeUnidadeFormatado = identificacao.nomeUnidade ? identificacao.nomeUnidade : '[NOME DA UNIDADE]';
-    const nomeUnidadeCapa = `${nomeUnidadeFormatado.toUpperCase()} - ${cidadeFormatada.toUpperCase()} / ${ufFormatado.toUpperCase()}`;
-
     let cnaesHtml = '';
     if (identificacao.cnaesSelecionados.length > 0) {
       cnaesHtml += `<b>CNAE Principal:</b> ${identificacao.cnaesSelecionados[0]}<br>`;
@@ -591,7 +586,7 @@ export default function App() {
     materiaisArr.push({ title: 'REFRIGERAÇÃO E EXAUSTÃO', text: 'Aparelhos de Ar-Condicionado tipo Split (Hi-Wall, Cassete ou Piso-teto) sistema Inverter. Nos ambientes sem ventilação natural, haverá exaustores mecânicos (ventiladores axiais Multivac), atendendo à RDC 50, Resolução RE nº 09 e NBR 7256/2021.' });
 
     const htmlMateriais = materiaisArr.map((m, idx) => `
-      <div class="keep-with-next">
+      <div>
         <h3 class="left-align" style="color:#000;">9.${idx+1}. ${m.title}</h3>
         <p>${m.text}</p>
       </div>`).join('');
@@ -608,7 +603,7 @@ export default function App() {
         const figNum = imgBase64 ? (figCounter++).toString().padStart(2, '0') : 'XX';
         html += `
           <br clear=all style='mso-special-character:line-break;page-break-before:always'>
-          <div class="keep-with-next">
+          <div>
             <h3 class="left-align" style="color: #000; text-transform: uppercase;">${titlePrefix} – ${floor.toUpperCase()}</h3>
             <p>O tráfego contínuo na unidade está indicado na <b>Figura ${figNum}</b> abaixo (sem escala – apenas para análise) representado por tracejados indicativos dos percursos possíveis. No projeto de arquitetura a planta está apresentada na <b>Prancha ${prancha}</b>, com <b>escala ${escala}</b>.</p>
           </div>
@@ -638,17 +633,19 @@ export default function App() {
       }
 
       let subIdx = 1;
-      let roomHTML = `<div class="avoid-break" style="margin-bottom: 20px;">`;
+      let roomHTML = `<div style="margin-bottom: 20px;">`;
       roomHTML += `<h3 class="left-align" style="color:#000; text-transform: uppercase;">${secAmb}.${i+1}. ${amb.nomePersonalizado.toUpperCase()}</h3>`;
 
       const addLine = (label, value) => {
         if(value && value !== 'Não se aplica' && value !== '') {
-           const lines = value.toString().split('\n').filter(l => l.trim() !== '');
-           let formattedValue = value;
+           const valueString = value.toString();
+           const lines = valueString.split('\\n');
            if (lines.length > 1) {
-              formattedValue = '<br>' + lines.map(l => `&bull; ${l.trim()}`).join('<br>');
+              roomHTML += `<p><b>${secAmb}.${i+1}.${subIdx}. ${label}:</b></p>`;
+              roomHTML += formatarListaNumerada(valueString, `${secAmb}.${i+1}.${subIdx}`);
+           } else {
+              roomHTML += `<p><b>${secAmb}.${i+1}.${subIdx}. ${label}:</b> ${valueString}</p>`;
            }
-           roomHTML += `<p><b>${secAmb}.${i+1}.${subIdx}. ${label}:</b> ${formattedValue}</p>`;
            subIdx++;
         }
       };
@@ -679,27 +676,28 @@ export default function App() {
       
     }).join('') : '<p><i>Nenhum ambiente adicionado ao projeto.</i></p>';
 
+    const capaImagem = identificacao.imagemCapa;
+
     const htmlContent = `
       <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
       <head>
         <meta charset='utf-8'>
         <title>${docTitle}</title>
         <style>
-          body { font-family: 'Calibri', sans-serif; font-size: 11pt; line-height: 1.5; color: #000; text-align: justify; }
-          h1, h2, h3 { page-break-after: avoid; }
-          h1 { font-size: 14pt; font-weight: bold; text-align: center; margin-top: 24px; text-transform: uppercase; }
-          h2 { font-size: 12pt; font-weight: bold; margin-top: 24px; margin-left: 10px; background-color: #f3f4f6; padding: 5px; text-transform: uppercase; }
-          h3 { font-size: 11pt; font-weight: bold; margin-top: 15px; margin-left: 20px; color: #cc0000; }
-          p { margin-bottom: 8px; margin-top: 0; }
+          body { font-family: 'Arial', sans-serif; font-size: 11pt; color: #000; line-height: 1.5; }
+          h1, h2, h3 { color: #cc0000; font-family: 'Arial', sans-serif; }
+          p { text-align: justify; margin-bottom: 10px; margin-top: 0; }
           .left-align { text-align: left; }
           .right-align { text-align: right; }
-          .assinaturas { text-align: center; margin-top: 60px; page-break-inside: avoid; }
-          .linha-assinatura { margin-top: 50px; margin-bottom: 5px; }
           .toc { margin-left: 20px; font-weight: bold; }
+          
+          /* Estilos para assinaturas */
+          .assinatura-box { text-align: center; margin-top: 60px; margin-bottom: 40px; }
+          .assinatura-linha { border-top: 1px solid #000; width: 300px; margin: 0 auto 5px auto; }
         </style>
       </head>
       <body>
-<!-- 💡 NOVA CAPA SEM TABELAS (Não quebra no Word) -->
+        <!-- 💡 NOVA CAPA SEM TABELAS (Não quebra no Word) -->
         <div style="text-align: center; margin-top: 60px;">
           <img src="${LOGO_SABIN_HEADER}" alt="Logo Sabin" style="width: 220px; margin-bottom: 60px;" />
           
@@ -725,29 +723,6 @@ export default function App() {
         <!-- Quebra de página APENAS APÓS A CAPA -->
         <br clear="all" style="mso-special-character:line-break;page-break-before:always" />
 
-              <div style="margin-bottom: 80px;">
-                <p style="font-size: 26pt; font-weight: bold; color: #000; margin: 0; padding: 0;">${docTitle}</p>
-                <p style="font-size: 14pt; font-weight: bold; color: #cc0000; margin: 5px 0 0 0; padding: 0;">${nomeUnidadeCapa}</p>
-              </div>
-            </td>
-          </tr>
-          <tr>
-            <td valign="bottom" align="right">
-              <p style="font-size: 11pt; margin: 0; text-transform: uppercase;">${identificacao.respProjeto || '[Nome do Engenheiro(a)]'}</p>
-              <p style="font-size: 8pt; margin: 0 0 15px 0;">CREA/CAU: ${identificacao.creaCauProjeto || '[000000/D-UF]'}</p>
-              
-              ${identificacao.respTecnicos.map(rt => `
-                <p style="font-size: 11pt; margin: 0; text-transform: uppercase;">${rt.nome || '[Nome do Resp. Técnico]'}</p>
-                <p style="font-size: 8pt; margin: 0 0 15px 0;">${rt.conselho || '[CRX: 0000]'}</p>
-              `).join('')}
-
-              <p style="font-size: 9pt; color: #cc0000; font-weight: bold; margin: 0;">SABIN DIAGNÓSTICO E SAÚDE</p>
-            </td>
-          </tr>
-        </table>
-        
-        <br clear=all style='mso-special-character:line-break;page-break-before:always'>
-
         <h2 class="left-align" style="background-color: transparent; border-bottom: 1px solid #ccc;">SUMÁRIO</h2>
         <p class="toc">1. OBJETIVO</p>
         <p class="toc">2. IDENTIFICAÇÃO DO ESTABELECIMENTO</p>
@@ -765,13 +740,13 @@ export default function App() {
 
         <br clear=all style='mso-special-character:line-break;page-break-before:always'>
 
-        <div class="keep-with-next">
+        <div>
           <h2>1. OBJETIVO</h2>
           <p>Este documento tem como finalidade apresentar os ambientes, assim como seus mobiliários, equipamentos, acessórios, a especificação dos materiais construtivos, acabamentos, acessórios e outros componentes, sendo todos eles partes envolvidas no empreendimento da unidade de <b>${textoServicosObjetivo}</b> do <b>${identificacao.nomeFantasia || '[Nome Fantasia]'}</b>.</p>
         </div>
         <p>É um complemento para a avaliação do projeto de edificações e emissão do <b>${identificacao.tipoProjeto}</b>, considerando a necessidade de organizar o processo de análise e aprovação de projetos de Estabelecimentos Assistenciais de Saúde e de Interesse à Saúde.</p>
 
-        <div class="keep-with-next">
+        <div>
           <h2>2. IDENTIFICAÇÃO DO ESTABELECIMENTO</h2>
           <p><b>Razão Social:</b> ${identificacao.razaoSocial || '[Razão Social]'}</p>
         </div>
@@ -784,7 +759,7 @@ export default function App() {
         <p><b>Telefone Engenharia:</b> ${identificacao.telefoneEngenharia || '[Telefone]'}</p>
         <p><b>E-mails (Engenharia e Projetos):</b> ${identificacao.emailsSelecionados.length > 0 ? identificacao.emailsSelecionados.join('; ') : '[E-mails]'}</p>
 
-        <div class="keep-with-next">
+        <div>
           <h2>3. DADOS FÍSICOS DA UNIDADE</h2>
           <p>A unidade é composta por ${calcularPavimentos()} pavimentos, divididos estruturalmente da seguinte forma:</p>
         </div>
@@ -796,39 +771,39 @@ export default function App() {
         <p><b>Área Total Construída:</b> ${areaTotalCalculada} m²</p>
         <p><b>Quantidade Total de Ambientes:</b> ${ambientesTotalCalculado}</p>
 
-        <div class="keep-with-next">
+        <div>
           <h2>4. EQUIPE TÉCNICA</h2>
           ${identificacao.respTecnicos.map(rt => `<p><b>Responsável Técnico pela Unidade:</b> ${rt.nome || '[Nome]'} - ${rt.conselho || '[Conselho]'}</p>`).join('')}
         </div>
         <p><b>Responsável Legal:</b> ${identificacao.respLegal || '[Nome]'} - CPF: ${identificacao.cpfRespLegal || '[000.000.000-00]'}</p>
 
         <h2>5. INFORMAÇÕES DE ATENDIMENTO E ATIVIDADES</h2>
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.1. ATIVIDADES RELACIONADAS:</h3>
           <p>${atendimento.atividade !== 'Selecione a atividade...' ? (atendimento.atividade === 'Outro (Especificar)' ? atendimento.atividadeManual : atendimento.atividade) : '[Atividade]'}</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.2. CAPACIDADE MÉDIA DE ATENDIMENTO:</h3>
           <p>${atendimento.capacidadeDia || '[0]'} clientes por dia.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.3. TIPOS DE MATERIAIS COLETADOS:</h3>
           <p>Sangue, secreções (para realização de cultura, exame a fresco, bacterioscópico, entre outros), urina, curvas glicêmicas/insulinêmicas, curva de lactose, tempo de sangramento e tempo de coagulação, secreção nasofaríngea.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.4. HORÁRIO DE FUNCIONAMENTO:</h3>
           <p>${atendimento.horarioSemana || '[Horário de Segunda a Sexta]'}<br>${atendimento.horarioSabado || '[Horário de Sábado]'}</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.5. CARGOS DOS COLABORADORES:</h3>
           <p>Agente de Recepção, Colhedor (a) (Técnico/Auxiliar de Enfermagem e/ou Técnico de Análises Clínicas), Supervisor (a) de Unidade e Agentes de Apoio.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.6. PERCURSO DOS CLIENTES NO POSTO DE COLETA:</h3>
           <p>Ao entrar no posto de coleta, o cliente retira uma senha e aguarda na recepção. O equipamento de televisão instalado em local visível à todas as cadeiras da espera, mostrará a senha e o correspondente guichê para atendimento. Durante o processo de admissão do cliente, o funcionário Sabin colhe informações pessoais, o pedido médico e identifica os exames que serão realizados.</p>
         </div>
@@ -836,7 +811,7 @@ export default function App() {
         <p>Após serem concluídas as coletas no posto, o cliente é direcionado à Área para desjejum, onde é oferecido o desjejum opcional. São disponibilizadas refeições rápidas como: sucos, biscoitos, pães de queijo, frutas, café, chocolate quente, água potável, entre outros.</p>
         <p>Os ambientes Sanitário, Sanitário P.C.D., Recepção e Área para desjejum são de livre circulação para os pacientes e acompanhantes. O acesso e permanência do cliente nas salas de coleta deve acontecer sempre acompanhado por um funcionário do laboratório. Os demais ambientes possuem acesso restrito aos funcionários do Laboratório Sabin;</p>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.7. TRANSPORTE DE AMOSTRAS BIOLÓGICAS:</h3>
           <p>Todas as amostras biológicas provenientes do posto de coleta são transportadas em recipiente isotérmico, higienizável, impermeável e com controle de temperatura que garante a estabilidade das amostras biológicas desde a coleta até a realização da análise dos exames.</p>
         </div>
@@ -864,12 +839,12 @@ export default function App() {
           </tr>
         </table>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.8. ARMAZENAMENTO DE INSUMOS:</h3>
           <p>Todos os insumos do posto de coleta são armazenados em armários locados nos ambientes onde seus usos são habituais e são rastreados em cumprimento da norma PALC.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.9. FORMA DE APRESENTAÇÃO DOS RESÍDUOS SÓLIDOS PARA COLETA:</h3>
           <p>A unidade possui ${atendimento.qtdBombonasTotal || '[0]'} bombonas de lixo de ${atendimento.tipoBombona} litros fabricadas em polietileno de alta densidade (PEAD). Tendo a distribuição para recolhimento e pesagem:</p>
         </div>
@@ -880,19 +855,19 @@ export default function App() {
            <li><b>Perfurocortantes (Grupo E):</b> ${atendimento.qtdPerfurocortante || '[0]'} contentores</li>
         </ul>
         
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">5.10. LOGÍSTICA DE ARMAZENAMENTO E COLETA EXTERNA DOS RESÍDUOS:</h3>
           <p>A unidade caracteriza-se como geradora de pequeno volume de Resíduos de Serviços de Saúde (RSS), mantendo o acondicionamento dos contentores descritos no item anterior de forma temporária e exclusiva em Abrigo Interno de Resíduos.</p>
         </div>
         <p>Para atestar a segurança sanitária, mitigar riscos ocupacionais e garantir a total ausência de contaminação cruzada, a retirada definitiva dos resíduos pela empresa terceirizada especializada ocorre mediante roteirização e agendamento prévio, estritamente em horário alternativo e contrário ao fluxo de atendimento.</p>
         <p>Desta forma, a operação de transbordo das bombonas do abrigo interno até o veículo coletor é executada com a unidade fechada para o público externo (ou em atestada ausência de pacientes). Este controle operacional padrão assegura que não haverá cruzamento simultâneo e físico entre a rota de saída do lixo biológico/comum e a circulação de áreas limpas, entrada de usuários, ou rotas de recebimento de insumos e malotes.</p>
 
-        <div class="keep-with-next">
+        <div>
           <h2>6. RELAÇÃO DE CONTRATOS E CONVÊNIOS</h2>
           <p>Disponível na matriz do Sabin Medicina Diagnóstica – Brasília SAAN Trecho 03 lotes 165 a 245.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h2>7. RELAÇÃO DE PRODUTOS E SERVIÇOS TERCEIRIZADOS</h2>
           <p>O único serviço terceirizado do estabelecimento é a coleta e destinação final dos resíduos infectantes e perfuro-cortantes gerados nos serviços de saúde – RSS.<br>Abaixo seguem as informações do referido prestador de serviço:</p>
         </div>
@@ -929,7 +904,7 @@ export default function App() {
         <h2>${secAmb}. ESPECIFICAÇÃO DOS AMBIENTES</h2>
         ${htmlAmbientes}
 
-        <div class="keep-with-next">
+        <div>
           <h2>${secSrv}. RELAÇÃO DE SERVIÇOS REALIZADOS NO ESTABELECIMENTO</h2>
           <p>Serão apresentadas a seguir as listagens das atividades e subatividades do EAS – Estabelecimento Assistencial de Saúde de acordo com as respectivas atribuições constantes na RDC Nº 50, de 21 fevereiro de 2002.</p>
         </div>
@@ -950,12 +925,12 @@ export default function App() {
 
         <h2>${secInst}. DESCRIÇÃO SUCINTA DA SOLUÇÃO ADOTADA PARA AS INSTALAÇÕES</h2>
         
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">${secInst}.1. ABASTECIMENTO DE ÁGUA POTÁVEL</h3>
           <p>O estabelecimento é abastecido de água tratada pela ${instalacoes.concessionariaAgua}, que realiza o tratamento e distribuição de água na região.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">${secInst}.2. ENERGIA ELÉTRICA</h3>
           <p>O abastecimento de energia elétrica é provido pela ${instalacoes.concessionariaEnergia}. A unidade possui uma instalação elétrica independente, constituída por diversos elementos:</p>
         </div>
@@ -968,27 +943,27 @@ export default function App() {
         <p>O quadro elétrico é composto por disjuntor geral de 100A e dispositivo diferencial residual (DR) que desliga todos os circuitos, e por diversos disjuntores secundários, que desligam os seus respectivos circuitos.<br>
         Esse dispositivo diferencial DR tem ainda a função de segurança de todos os circuitos elétricos contra as correntes de fuga provocadas por equipamentos eletroeletrônicos. Os disjuntores são acionados pela simples movimentação de suas alavancas, em caso de sobrecarga momentânea, o disjuntor do circuito atingido se desligará automaticamente.</p>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">${secInst}.3. ILUMINAÇÃO DE EMERGÊNCIA</h3>
           <p>O empreendimento contempla a iluminação de emergência, através de um circuito de 16A, dedicado, no quadro de distribuição, de acordo com a ABNT 10.898/2013 - Sistema de Iluminação de Emergency e NPT – Norma de Procedimento Técnico 018 -11.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">${secInst}.4. COLETA E DESTINAÇÃO DE ESGOTO</h3>
           <p>A ${instalacoes.concessionariaAgua} realiza, respectivamente, a coleta e tratamento de esgoto sanitário de forma rápida e segura.<br>A empresa realiza o tratamento e destinação adequados dos resíduos líquidos, com índice de ${instalacoes.indiceEsgoto}% de coleta e tratamento de esgoto.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">${secInst}.5. RESÍDUOS SÓLIDOS</h3>
           <p>Os resíduos sólidos do estabelecimento são coletados pela ${instalacoes.coletaResiduos}, que realiza a gestão de resíduos sólidos urbanos através dos serviços de coleta domiciliar, destinação final dos resíduos sólidos urbanos e programa de coleta seletiva.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h3 class="left-align" style="color: #000;">${secInst}.6. ÁGUAS PLUVIAIS</h3>
           <p>A água da chuva é coletada por dispositivos de captação instalados no edifício. Logo em seguida, a centralização é direcionada para rede pública de águas pluviais. Não há utilização de águas pluviais para reuso.</p>
         </div>
 
-        <div class="keep-with-next">
+        <div>
           <h2>${secRef}. REFERÊNCIAS</h2>
           <p class="left-align">
             Resolução nº 0389/2006 – Publicada no DOE – 7148, de 16/06/06<br>
@@ -1000,23 +975,23 @@ export default function App() {
           </p>
         </div>
 
-        <div class="assinaturas" style="page-break-inside: avoid;">
+        <div class="assinatura-box">
           <br><br><br><br><br><br><br>
-          <div class="linha-assinatura">______________________________________________</div>
+          <div class="assinatura-linha"></div>
           <b>${identificacao.respProjeto || '[Nome do Engenheiro(a)]'}</b><br>
           Engenheiro(a) Responsável Pelo Projeto<br>
           CREA/CAU: ${identificacao.creaCauProjeto || '[XXXXX/D-UF]'}<br>
           
           ${identificacao.respTecnicos.map(rt => `
             <br><br><br><br><br><br><br>
-            <div class="linha-assinatura">______________________________________________</div>
+            <div class="assinatura-linha"></div>
             <b>${rt.nome || '[Nome do Resp. Técnico]'}</b><br>
             Responsável Técnico da unidade Laboratório Sabin/${identificacao.nomeFantasia || '[Nome Fantasia]'}<br>
             ${rt.conselho || '[CRX:XXXX-UF]'}<br>
           `).join('')}
           
           <br><br><br><br><br><br><br>
-          <div class="linha-assinatura">______________________________________________</div>
+          <div class="assinatura-linha"></div>
           <b>${identificacao.respLegal || '[Nome do Resp. Legal]'}</b><br>
           Responsável Legal pelo Grupo Sabin<br>
           CPF: ${identificacao.cpfRespLegal || '[000.000.000-00]'}<br>
